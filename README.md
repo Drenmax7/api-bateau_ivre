@@ -10,6 +10,9 @@ La BDD peut ensuite être rempli de donnée de test via l'URL /api/populate.
 Cela devrait prendre quelques dizaines de seconde.
 Si la creation des données est trop longue, il est possible de réduire leur quantité en modifiant le fichier api/populate.py en reduisant le nombre d'iterations de certaines boucles for.
 
+Creation d'une session utilisateur :
+  /api/utilisateur/login/ POST {mail, username}
+  
 Ci dessous la liste des urls permettant de recuperer des données :
 
 Ci dessous la liste des urls permettant d'ajouter des données :
