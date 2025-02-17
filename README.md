@@ -15,7 +15,7 @@ Les paramètres de la base de données peuvent être ajustés en modifiant le fi
 2. Modifiez-le pour qu'il corresponde à votre base de données locale.
 
 Par défaut, ce projet utilise **MariaDB**, géré par **XAMPP** :
-- **Nom de la base de données** : `bateauivre`
+- **Nom de la base de données** : `bateauIvre`
 - **Utilisateur** : `root`
 - **Mot de passe** : Aucun
 
