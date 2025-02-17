@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from ..models import Chaloupe
 from ..serializers import ChaloupeSerializer
 
-class ChaloupeAPIView(viewsets.ModelViewSet):
+class ChaloupeAPIView(viewsets.ViewSet):
     queryset = Chaloupe.objects.all()
     serializer_class = ChaloupeSerializer
 

@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from ..models import PartSocial
 from ..serializers import PartSocialSerializer
 
-class PartSocialAPIView(viewsets.ModelViewSet):
+class PartSocialAPIView(viewsets.ViewSet):
     queryset = PartSocial.objects.all()
     serializer_class = PartSocialSerializer
 

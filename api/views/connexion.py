@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from ..models import Connexion
 from ..serializers import ConnexionSerializer
 
-class ConnexionAPIView(viewsets.ModelViewSet):
+class ConnexionAPIView(viewsets.ViewSet):
     queryset = Connexion.objects.all()
     serializer_class = ConnexionSerializer
 

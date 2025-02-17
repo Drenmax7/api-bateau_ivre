@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from ..models import Societaire
 from ..serializers import SocietaireSerializer
 
-class SocietaireAPIView(viewsets.ModelViewSet):
+class SocietaireAPIView(viewsets.ViewSet):
     queryset = Societaire.objects.all()
     serializer_class = SocietaireSerializer
 

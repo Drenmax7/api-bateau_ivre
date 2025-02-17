@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from ..models import Evenement
 from ..serializers import EvenementSerializer
 
-class EvenementAPIView(viewsets.ModelViewSet):
+class EvenementAPIView(viewsets.ViewSet):
     queryset = Evenement.objects.all()
     serializer_class = EvenementSerializer
 
