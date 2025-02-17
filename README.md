@@ -5,6 +5,7 @@ Modifier le dictionnaire DATABASES afin de convenir à la BDD local.
 De base il s'agit d'une BDD MariaDB géré par Xamp, le nom de la BDD est bateauivre, le user est root et pas de mdp.
 
 Une fois la BDD crée executer la commande 'python -m manage makemigrations' afin de préparer les tables de la BDD puis 'python -m manage migrate' pour les créer.
+Le server se lance quant à lui avec 'python -m manage runserver'.
 La BDD peut ensuite être rempli de donnée de test via l'URL /api/populate.
 Cela devrait prendre quelques dizaines de seconde.
 Si la creation des données est trop longue, il est possible de réduire leur quantité en modifiant le fichier api/populate.py en reduisant le nombre d'iterations de certaines boucles for.
