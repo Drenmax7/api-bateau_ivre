@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'bateau_ivre.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bateauivre',
+        'NAME': 'bateauIvre',
         'USER': 'root',
         'PASSWORD': '',
         'HOST':'localhost',
