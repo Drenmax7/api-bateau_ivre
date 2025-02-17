@@ -2,10 +2,11 @@
 
 ## 🛠 **Prérequis**
 
-Avant de démarrer, il est nécessaire d'installer les dépendances suivantes :
+Avant de démarrer, il est nécessaire d'installer les dépendances du fichier requirements.txt :
 
-- **Django** : `pip install django`
-- **Django Rest Framework** : `pip install djangorestframework`
+```bash
+pip install -r requirements.txt
+```
 
 ## ⚙️ **Configuration de la Base de Données**
 
