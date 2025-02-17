@@ -52,6 +52,15 @@ Une fois le serveur démarré, vous pouvez remplir la base de données avec des 
 
 ---
 
+### 🔑 **Identifiants de Test Utilisateur**
+
+Voici les identifiants d'un des utilisateurs créés lors du remplissage :
+
+- **Mail** : `canard@gmail.com` 🦆  
+- **Mot de passe** : `canard` 🔒
+
+---
+
 ## 🔑 **Création d'une Session Utilisateur**
 
 Pour créer une session utilisateur, utilisez l'URL suivante avec une méthode **POST** :  
@@ -59,7 +68,7 @@ Pour créer une session utilisateur, utilisez l'URL suivante avec une méthode *
 
 Envoyez les paramètres suivants dans le corps de la requête :
 - **`mail`** : L'email de l'utilisateur.
-- **`username`** : Le nom d'utilisateur.
+- **`password`** : Le mot de passe de l'utilisateur.
 
 ---
 
