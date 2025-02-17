@@ -3,7 +3,6 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 
 from api.models import *
-from api.serializers import *
 
 from django.http import JsonResponse
 
@@ -90,6 +89,7 @@ def popUtilisateur():
     listeMail = []
 
     for batch in range(100):
+        print(f"{batch+1}/100")
         listeEntree = []
         for i in range(100):
             nom = choice(noms)
@@ -102,7 +102,7 @@ def popUtilisateur():
                 mail = f"{nom}{choice(["","."])}{prenom}{randint(0,20)}@{choice(["gmail","orange","outlook","canard"])}.com"
             listeMail.append(mail)
 
-            mdp = getrandbits(128)
+            mdp = "ceci n'est pas le mot de passe, il est hashe"
             civilite = choice(["M","Mme","Non binaire","N/a","Oiseau"])
             adresse = f"{randint(1,999)} {choice(formes_de_rue)} {choice(noms_de_rue)}"
             ville = choice(list(villes_codes_postaux))
@@ -128,8 +128,6 @@ def popUtilisateur():
             listeEntree.append(Utilisateur(
                 nom = nom,
                 prenom = prenom,
-                mail = mail,
-                mot_de_passe = mdp,
                 civilite = civilite,
                 adresse = adresse,
                 ville = ville,
@@ -138,10 +136,31 @@ def popUtilisateur():
                 telephone = tel,
                 complement_adresse = comp,
                 premiere_connexion = premiere,
-                derniere_connexion = derniere
+                derniere_connexion = derniere,
+                mail = mail,
+                password=mdp,
             ))
 
         Utilisateur.objects.bulk_create(listeEntree)
+
+    user = Utilisateur(
+        nom = "Donald",
+        prenom = "Duck",
+        civilite = "Oiseau",
+        adresse = "Pres du lac",
+        ville = "Canard city",
+        pays = "France",
+        code_postal = "77700",
+        telephone = "0612345678",
+        complement_adresse = "Pres du lac",
+        premiere_connexion = datetime.datetime.now(),
+        derniere_connexion = datetime.datetime.now(),
+
+        mail = "canard@gmail.com",
+    )
+
+    user.set_password("canard")
+    user.save()
 
 def popSocietaire():
     print("societaire")
@@ -357,6 +376,8 @@ def popConnexion():
     users = list(Societaire.objects.all())
     currentDate = datetime.datetime.now()
     for i in range(1000):
+        if (i+1)%100 == 0:
+            print(f"{i+1}/1000")
         jour = Connexion(jour = currentDate - datetime.timedelta(days=i))
         jour.save()
 
