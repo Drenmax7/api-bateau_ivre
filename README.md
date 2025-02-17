@@ -71,6 +71,20 @@ Envoyez les paramètres suivants dans le corps de la requête :
 - **`mail`** : L'email de l'utilisateur.
 - **`password`** : Le mot de passe de l'utilisateur.
 
+## **Important**
+
+Lorsque vous interagissez avec l'API, il est essentiel de **récupérer le token CSRF** renvoyé dans la réponse de l'API. 🦆
+
+L'API Django utilise un système de sécurité basé sur des **tokens CSRF** (Cross-Site Request Forgery). Ce mécanisme est utilisé pour sécuriser les requêtes sensibles. En effet, chaque méthode **POST**, **PUT**, **PATCH** ou **DELETE** nécessite ce token pour être traitée.
+
+### Comment l'utiliser ?
+- **Lors de l'envoi d'une requête** de type **POST**, **PUT**, **PATCH** ou **DELETE**, vous devez inclure dans le **header** de votre requête un champ nommé `X-CSRFToken`.
+- La **valeur** de ce champ doit être le **token CSRF** récupéré.
+
+Assurez-vous de toujours envoyer ce token afin de garantir que vos requêtes seront **acceptées** par l'API.
+
+💡 **Note** : Sans ce token, l'API rejettera la requête et vous recevrez une erreur de type **CSRF failed**.
+
 ---
 
 ## 📑 **Liste des URL pour la gestion des données**
