@@ -94,7 +94,7 @@ Voici ta section améliorée et mise en forme en **Markdown** 🦆🔥
 ## 📑 **Liste des URL pour la gestion des données** 
 
 
-<detailsZzz todo remove>
+<details>
 <summary><strong>🔍 Récupération des données :</strong></summary>
 
 #### 🧑‍💻 **Obtenir les informations de l'utilisateur connecté**  
@@ -132,7 +132,9 @@ Voici ta section améliorée et mise en forme en **Markdown** 🦆🔥
 ✅ **Exemple d'utilisation** :  
 Si tu veux récupérer tous les utilisateurs **nommés "Max"** qui habitent **à Paris**, en **mode strictement égal** :  
 ```json
-{
+URL : "/api/utilisateur/getUser/"
+
+body : {
   "colonne": ["nom", "ville"],
   "filtre": ["Duck", "Paris"],
   "mode": ["==", "=="]
