@@ -105,11 +105,11 @@ Voici ta section améliorée et mise en forme en **Markdown** 🦆🔥
 
 ---
 
-#### 🎯 **Rechercher des utilisateurs avec filtres avancés**  
-🔹 **URL** : `/api/utilisateur/getUser/`  
-🔹 **Accès** : 🔒 Requiert une connexion  
+#### 🎯 **Rechercher dans une table avec filtres avancés**  
+🔹 **URLS** : `/api/utilisateur/getUser/`, `/api/evenement/getEvenement/`, `/api/chaloupe/getChaloupe/`, `/api/connexion/getConnexion/`, `/api/partSocial/getPartSocial/`, `/api/societaire/getSocietaire/`
+🔹 **Accès** : 🔒 Requiert une connexion  (excepté **`/api/evenement/getEvenement/`**)
 🔹 **Méthode** : **GET**  
-🔹 **Description** :  Permet de selectionner des utilisateurs via des filtres et de récuperer des informations basiques sur eux, telles que : **Nom, prénom, ville, etc.**  
+🔹 **Description** :  Permet de selectionner des entrées d'une table via des filtres et de les récuperer.
 <details>
 <summary><b>🔹Paramètres requis dans le body :</b></summary>
 
