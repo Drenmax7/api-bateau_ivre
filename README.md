@@ -95,7 +95,7 @@ Voici ta section améliorée et mise en forme en **Markdown** 🦆🔥
 
 
 <details>
-<summary> 🔍 Récupération des données </summary>
+<summary><strong>🔍 Récupération des données :</strong></summary>
 
 #### 🧑‍💻 **Obtenir les informations de l'utilisateur connecté**  
 🔹 **URL** : `/api/utilisateur/getLoginUser/`  
@@ -111,7 +111,7 @@ Voici ta section améliorée et mise en forme en **Markdown** 🦆🔥
 🔹 **Méthode** : **GET**  
 🔹 **Description** :  Permet de selectionner des utilisateurs via des filtres et de récuperer des informations basiques sur eux, telles que : **Nom, prénom, ville, etc.**  
 <details>
-<summary> <b>🔹Paramètres requis dans le body</b> :  </summary>
+<summary><b>🔹Paramètres requis dans le body :</b></summary>
 
 | Champ   | Type    | Description |
 |---------|--------|-------------|
@@ -138,22 +138,33 @@ Si tu veux récupérer tous les utilisateurs **nommés "Max"** qui habitent **à
   "mode": ["==", "=="]
 }
 ```
-</details>
+
 </details>
 
 ---
 
-### ➕ **Ajouter des données** :
+</details>
+
+<details>
+<summary><strong>➕ Ajouter des données :</strong></summary>
 
 - [Liste des URLs d'ajout] 👇
 
-### 🔄 **Mettre à jour des données** :
+</details>
 
-- [Liste des URLs de mise à jour] 👇
+<details>
+<summary><strong>🔄 Mettre à jour des données :</strong></summary>
 
-### ❌ **Supprimer des données** :
+- [Liste des URLs d'ajout] 👇
 
-- [Liste des URLs de suppression] 👇
+</details>
+
+<details>
+<summary><strong>❌ Supprimer des données :</strong></summary>
+
+- [Liste des URLs d'ajout] 👇
+
+</details>
 
 ---
 
