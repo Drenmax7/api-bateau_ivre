@@ -6,8 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.core import exceptions
 
 from .generalFunctions import filtreTable
-from ..models import Evenement
-from ..serializers import EvenementSerializer
+from ..models import Evenement, Reserve
+from ..serializers import EvenementSerializer, ReserveSerializer
 
 class EvenementAPIView(viewsets.GenericViewSet):
     queryset = Evenement.objects.all()
@@ -18,6 +18,18 @@ class EvenementAPIView(viewsets.GenericViewSet):
         try :
             utilisateurs = Evenement.objects.filter(**filtreTable(request))
             serializer = self.get_serializer(utilisateurs, many=True)
+            return Response(serializer.data)
+
+        except exceptions.FieldError as e:
+            return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
+        except ValueError as e:
+            return Response(str(e),status=status.HTTP_403_FORBIDDEN)
+        
+    @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
+    def getReserve(self, request):
+        try :
+            utilisateurs = Reserve.objects.filter(**filtreTable(request))
+            serializer = ReserveSerializer(utilisateurs, many=True)
             return Response(serializer.data)
 
         except exceptions.FieldError as e:

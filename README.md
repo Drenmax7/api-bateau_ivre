@@ -106,7 +106,7 @@ Voici ta section améliorée et mise en forme en **Markdown** 🦆🔥
 ---
 
 #### 🎯 **Rechercher dans une table avec filtres avancés**  
-🔹 **URLS** : `/api/utilisateur/getUser/`, `/api/evenement/getEvenement/`, `/api/chaloupe/getChaloupe/`, `/api/connexion/getConnexion/`, `/api/partSocial/getPartSocial/`, `/api/societaire/getSocietaire/`  
+🔹 **URLS** : `/api/utilisateur/getUser/`, `/api/societaire/getSocietaire/`, `/api/partSocial/getPartSocial/`, `/api/evenement/getEvenement/`, `/api/evenement/getReserve/`, `/api/chaloupe/getChaloupe/`, `/api/chaloupe/getRejoint/`, `/api/connexion/getConnexion/`, `/api/connexion/getHistorique/`  
 🔹 **Accès** : 🔒 Requiert une connexion  (excepté **`/api/evenement/getEvenement/`**)  
 🔹 **Méthode** : **GET**  
 🔹 **Description** :  Permet de selectionner des entrées d'une table via des filtres et de les récuperer.

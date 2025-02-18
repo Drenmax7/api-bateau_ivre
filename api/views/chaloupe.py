@@ -6,8 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.core import exceptions
 
 from .generalFunctions import filtreTable
-from ..models import Chaloupe
-from ..serializers import ChaloupeSerializer
+from ..models import Chaloupe, Rejoint
+from ..serializers import ChaloupeSerializer, RejointSerializer
 
 class ChaloupeAPIView(viewsets.GenericViewSet):
     queryset = Chaloupe.objects.all()
@@ -18,6 +18,18 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
         try :
             utilisateurs = Chaloupe.objects.filter(**filtreTable(request))
             serializer = self.get_serializer(utilisateurs, many=True)
+            return Response(serializer.data)
+
+        except exceptions.FieldError as e:
+            return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
+        except ValueError as e:
+            return Response(str(e),status=status.HTTP_403_FORBIDDEN)
+        
+    @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
+    def getRejoint(self, request):
+        try :
+            utilisateurs = Rejoint.objects.filter(**filtreTable(request))
+            serializer = RejointSerializer(utilisateurs, many=True)
             return Response(serializer.data)
 
         except exceptions.FieldError as e:
