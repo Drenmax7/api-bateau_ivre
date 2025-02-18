@@ -87,14 +87,61 @@ Assurez-vous de toujours envoyer ce token afin de garantir que vos requêtes ser
 
 ---
 
-## 📑 **Liste des URL pour la gestion des données**
+Voici ta section améliorée et mise en forme en **Markdown** 🦆🔥  
 
-### 🔍 **Récupérer des données** :
+---
 
-- [Liste des URLs de récupération] 👇
-- **`/api/utilisateur/getLoginUser/`**
-- **`/api/utilisateur/getUser/`**
-- **`no url`**
+## 📑 **Liste des URL pour la gestion des données** 
+
+
+<details>
+<summary> 🔍 Récupération des données </summary>
+
+#### 🧑‍💻 **Obtenir les informations de l'utilisateur connecté**  
+🔹 **URL** : `/api/utilisateur/getLoginUser/`  
+🔹 **Accès** : 🔒 Requiert une connexion  
+🔹 **Méthode** : **GET**  
+🔹 **Description** :  Permet de récupérer les informations de base sur l'utilisateur actuellement connecté, telles que :  **Nom, prénom, ville, etc.**  
+
+---
+
+#### 🎯 **Rechercher des utilisateurs avec filtres avancés**  
+🔹 **URL** : `/api/utilisateur/getUser/`  
+🔹 **Accès** : 🔒 Requiert une connexion  
+🔹 **Méthode** : **GET**  
+🔹 **Description** :  Permet de selectionner des utilisateurs via des filtres et de récuperer des informations basiques sur eux, telles que : **Nom, prénom, ville, etc.**  
+<details>
+<summary> <b>🔹Paramètres requis dans le body</b> :  </summary>
+
+| Champ   | Type    | Description |
+|---------|--------|-------------|
+| `colonne` | `list[str]` | Liste des colonnes sur lesquelles appliquer les filtres |
+| `filtre`  | `list[str]` | Liste des valeurs utilisées pour filtrer les résultats |
+| `mode`    | `list[str]` | Méthode de filtrage appliquée |
+
+🔹 **Modes de filtrage disponibles** :  
+| Mode | Signification |
+|------|--------------|
+| `==`  | Égal à |
+| `<=`  | Inférieur ou égal |
+| `<`   | Strictement inférieur |
+| `>=`  | Supérieur ou égal |
+| `>`   | Strictement supérieur |
+| `^`   | Contient |
+
+✅ **Exemple d'utilisation** :  
+Si tu veux récupérer tous les utilisateurs **nommés "Max"** qui habitent **à Paris**, en **mode strictement égal** :  
+```json
+{
+  "colonne": ["nom", "ville"],
+  "filtre": ["Duck", "Paris"],
+  "mode": ["==", "=="]
+}
+```
+</details>
+</details>
+
+---
 
 ### ➕ **Ajouter des données** :
 
