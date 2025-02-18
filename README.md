@@ -92,8 +92,9 @@ Assurez-vous de toujours envoyer ce token afin de garantir que vos requêtes ser
 ### 🔍 **Récupérer des données** :
 
 - [Liste des URLs de récupération] 👇
-- /api/utilisateur/getUser/
-- /api/utilisateur/getLoginUser/
+- **`/api/utilisateur/getLoginUser/`**
+- **`/api/utilisateur/getUser/`**
+- **`no url`**
 
 ### ➕ **Ajouter des données** :
 

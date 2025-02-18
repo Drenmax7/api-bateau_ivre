@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
 from django.views.decorators.csrf import csrf_exempt
+from django.core import exceptions
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -36,9 +37,46 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
     def getUser(self, request):
-        print(request.data)
-        colonne = request.data['colonne']
-        filtre = request.data['filtre']
+        colonne = request.data.get('colonne',[])
+        filtre = request.data.get('filtre',[])
+        mode = request.data.get("mode",[])
 
-        print(colonne)
-        return Response("Hello world")
+        if "password" in colonne:
+            return Response("Cannot filter by password for security reason",status=status.HTTP_403_FORBIDDEN)
+
+        taille = min(len(colonne),len(filtre))
+
+        colonne = colonne[:taille]
+        filtre = filtre[:taille]
+        while len(mode) < taille:
+            mode.append(0)
+
+
+        filtre_dict = {}
+        for i in range(len(colonne)):
+            col = colonne[i]
+            
+            if mode[i] == "<":
+                action = "lt"
+            elif mode[i] == "<=":
+                action = "lte"
+            elif mode[i] == ">":
+                action = "gt"
+            elif mode[i] == ">=":
+                action = "gte"
+            elif mode[i] == "==":
+                action = "exact"
+            elif mode[i] == "^":
+                action = "icontains"
+            else:
+                action = "exact"
+            
+            filtre_dict[f"{col}__{action}"] = filtre[i]
+
+        try :
+            utilisateurs = Utilisateur.objects.filter(**filtre_dict)
+            serializer = self.get_serializer(utilisateurs, many=True)
+            return Response(serializer.data)
+
+        except exceptions.FieldError as e:
+            return Response(str(e))
