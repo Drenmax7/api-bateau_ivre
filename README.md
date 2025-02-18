@@ -94,7 +94,7 @@ Voici ta section améliorée et mise en forme en **Markdown** 🦆🔥
 ## 📑 **Liste des URL pour la gestion des données** 
 
 
-<details>
+<detailsZzz todo remove>
 <summary><strong>🔍 Récupération des données :</strong></summary>
 
 #### 🧑‍💻 **Obtenir les informations de l'utilisateur connecté**  

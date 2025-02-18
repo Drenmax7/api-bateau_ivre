@@ -20,6 +20,9 @@ urlpatterns = [
 from django.conf import settings
 
 if settings.DEBUG:
+    print("========================================================\n"+
+          "POPULATE EST ACCESSIBLE : METTRE DJANGO EN DEBUG = FALSE \n"+
+          "========================================================")
     urlpatterns.append(
         path("populate/", populate),
     )
