@@ -22,17 +22,19 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
         user = authenticate(username=mail, password=password)
         if user:
             login(request, user)
-            return Response("Connexion accepte",status=status.HTTP_200_OK)
+            request.session.save()
+            sessionid = request.session.session_key
+            return Response({"message":"Connexion reussie","sessionid":sessionid},status=status.HTTP_200_OK)
         else:
-            return Response("Connexion echoue", status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"message":"Connexion echoue","sessionid":""}, status=status.HTTP_401_UNAUTHORIZED)
 
 
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
-    def getLoginUser(self, request):        
+    def getLoginUser(self, request):     
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
     
-    
+
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
     def getUser(self, request):
         try :
