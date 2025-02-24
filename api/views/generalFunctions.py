@@ -3,9 +3,9 @@ from django.core import exceptions
 from rest_framework import status
 
 def filtreTable(request):
-    colonne = request.data.get('colonne',[])
-    filtre = request.data.get('filtre',[])
-    mode = request.data.get("mode",[])
+    colonne = request.GET.getlist('colonne',[])
+    filtre = request.GET.getlist('filtre',[])
+    mode = request.GET.getlist("mode",[])
 
     if "password" in colonne:
         raise ValueError("Cannot filter by password for security reason")
@@ -15,7 +15,7 @@ def filtreTable(request):
     colonne = colonne[:taille]
     filtre = filtre[:taille]
     while len(mode) < taille:
-        mode.append(0)
+        mode.append(">=")
 
 
     filtre_dict = {}
