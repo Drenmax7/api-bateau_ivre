@@ -27,15 +27,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-CSRF_COOKIE_HTTPONLY = True  # Protège le token CSRF
+CSRF_COOKIE_HTTPONLY = False  # Protège le token CSRF
 CORS_ALLOW_CREDENTIALS = True  # Autorise l'envoi des cookies
-SESSION_COOKIE_SAMESITE = "None"
-SESSION_COOKIE_SECURE = False 
-if not(SESSION_COOKIE_SECURE):
-    print("Passer SESSION_COOKIE_SECURE a true en prod")
     
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",  # Remplace par ton URL Angular
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:4200"
 ]
 
 # Application definition
@@ -53,11 +53,11 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'api.middleware.URLSessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
