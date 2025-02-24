@@ -7,7 +7,13 @@ User = get_user_model()
 
 class URLSessionMiddleware(MiddlewareMixin):
     def process_request(self, request):
+        csrftoken = request.GET.get("csrftoken")
+        if csrftoken:
+            request.META['HTTP_X_CSRFTOKEN'] = csrftoken
+            request.COOKIES["csrftoken"] = csrftoken
+
         session_key = request.GET.get("sessionid")  # Récupère la clé de session dans l'URL
+        #print(request.csrf_token)
         if session_key:
             session = SessionStore(session_key)
             if session.exists(session_key):
@@ -16,15 +22,16 @@ class URLSessionMiddleware(MiddlewareMixin):
                     try:
                         request.user = User.objects.get(pk=user_id)  # Authentifie l'utilisateur
                         request.session = session
-                        print("trouve",request.user)
+                        #print("trouve",request.user)
                     except User.DoesNotExist:
-                        print("user does not exist")
+                        #print("user does not exist")
                         request.user = AnonymousUser()
                 else:
-                    print("no user id")
+                    #print("no user id")
                     request.user = AnonymousUser()
             else:
-                print("sesion n'existe pas")
+                #print("sesion n'existe pas")
                 request.user = AnonymousUser()
         else:
-            print("no session key")
+            #print("no session key")
+            pass
