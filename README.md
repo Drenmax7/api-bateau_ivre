@@ -47,7 +47,7 @@ python -m manage runserver
 
 ## 🧑‍🔬 **Remplir la Base de Données avec des Données de Test**
 
-Une fois le serveur démarré, vous pouvez remplir la base de données avec des données de test via l'URL **`/api/populate`**. Cela peut prendre quelques dizaines de secondes.
+Une fois le serveur démarré, vous pouvez remplir la base de données avec des données de test via l'URL **`/api/populate/`**. Cela peut prendre quelques dizaines de secondes.
 
 👉 Si la création des données est trop lente, vous pouvez réduire leur quantité en modifiant le fichier **`api/populate.py`** et en ajustant le nombre d'itérations dans certaines boucles `for`.
 
@@ -73,21 +73,19 @@ Envoyez les paramètres suivants dans le corps de la requête :
 
 ## **Important**
 
-Lorsque vous interagissez avec l'API, il est essentiel de **récupérer le token CSRF** renvoyé dans la réponse de l'API. 🦆
+Lorsque vous interagissez avec l'API, il est essentiel de **récupérer le token CSRF** renvoyé dans la réponse de l'API, ainsi que le **session id**. 🦆
 
 L'API Django utilise un système de sécurité basé sur des **tokens CSRF** (Cross-Site Request Forgery). Ce mécanisme est utilisé pour sécuriser les requêtes sensibles. En effet, chaque méthode **POST**, **PUT**, **PATCH** ou **DELETE** nécessite ce token pour être traitée.
+Le **session id** peremt à l'api de lier une requete à une session active.
 
 ### Comment l'utiliser ?
-- **Lors de l'envoi d'une requête** de type **POST**, **PUT**, **PATCH** ou **DELETE**, vous devez inclure dans le **header** de votre requête un champ nommé `X-CSRFToken`.
+- **Lors de l'envoi d'une requête** de type **POST**, **PUT**, **PATCH** ou **DELETE**, vous devez inclure dans **l'URL** de votre requête un champ nommé `csrftoken`.
 - La **valeur** de ce champ doit être le **token CSRF** récupéré.
+- De la même façon, lors de chaque requête **necessitant une connexion** il faut inclure dans **l'URL** de votre requête un champs nommé `sessionid` dont la valeur doit être **l'id recupéré** précedemment.
 
-Assurez-vous de toujours envoyer ce token afin de garantir que vos requêtes seront **acceptées** par l'API.
+Assurez-vous de toujours envoyer ces tokens afin de garantir que vos requêtes seront **acceptées** par l'API.
 
-💡 **Note** : Sans ce token, l'API rejettera la requête et vous recevrez une erreur de type **CSRF failed**.
-
----
-
-Voici ta section améliorée et mise en forme en **Markdown** 🦆🔥  
+💡 **Note** : Sans l'un de ces tokens, l'API rejettera la requête et vous recevrez une erreur de type **CSRF failed** ou bien **Unauthorized**.
 
 ---
 
@@ -130,7 +128,7 @@ Voici ta section améliorée et mise en forme en **Markdown** 🦆🔥
 | `^`   | Contient |
 
 ✅ **Exemple d'utilisation** :  
-Si tu veux récupérer tous les utilisateurs **nommés "Max"** qui habitent **à Paris**, en **mode strictement égal** :  
+Si tu veux récupérer tous les utilisateurs **nommés "Duck"** qui habitent **à Paris**, en **mode strictement égal** :  
 ```json
 URL : "/api/utilisateur/getUser/"
 
@@ -151,6 +149,7 @@ body : {
 <summary><strong>➕ Ajouter des données :</strong></summary>
 
 - [Liste des URLs d'ajout] 👇
+- `api/utilisateur/addUser/`
 
 </details>
 
@@ -158,6 +157,9 @@ body : {
 <summary><strong>🔄 Mettre à jour des données :</strong></summary>
 
 - [Liste des URLs d'ajout] 👇
+- `api/utilisateur/updateSelfPassword/`
+- `api/utilisateur/updateUserPassword/`
+- `api/utilisateur/updateUser/`
 
 </details>
 
@@ -165,6 +167,7 @@ body : {
 <summary><strong>❌ Supprimer des données :</strong></summary>
 
 - [Liste des URLs d'ajout] 👇
+- `api/utilisateur/deleteUser/`
 
 </details>
 
