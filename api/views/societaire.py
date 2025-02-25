@@ -1,11 +1,12 @@
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser 
 
 from django.core import exceptions
+from django.db.utils import DataError
 
-from .generalFunctions import filtreTable
+from .generalFunctions import filtreTable, updateTable
 from ..models import Societaire
 from ..serializers import SocietaireSerializer
 
@@ -30,3 +31,74 @@ class SocietaireAPIView(viewsets.GenericViewSet):
             return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
         except ValueError as e:
             return Response(str(e),status=status.HTTP_403_FORBIDDEN)
+    
+        
+    """Permet à un utilisateur disposant des permissions necessaire de modifier les informations concernant un societaire
+    Le body de la requete doit contenir les champs 'id_societaire', 'colonne', 'valeur'.
+    'id_societaire' correspond à l'id du societaire dont on veut modifier les informations, 
+    'colonne' aux champs à modifier,
+    'valeur' est la valeur qui sera placé dans le champs
+    """
+    @action(detail=False, methods=["put"], permission_classes = [IsAdminUser])
+    def updateSocietaire(self, request):
+        table_id = request.data.get("id_societaire")
+        if not table_id:
+            return Response({"message": "id_societaire est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+
+        entry = Societaire.objects.filter(id_societaire=table_id)
+        if len(entry) == 0:
+            return Response({"message": "Aucun societaire n'a cette id"}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            entry.update(**updateTable(request))
+            return Response({"message": "Changement effectue"}, status=status.HTTP_200_OK)
+        except exceptions.FieldDoesNotExist as e:
+            return Response({"message":f"{e} Les colonnes possible sont {Societaire._meta.get_fields()}."},status=status.HTTP_400_BAD_REQUEST)
+    
+    """Permet à un utilisateur disposant des permissions necessaire de supprimer un societaire
+    Le body de la requete doit contenir le champs 'id_societaire' qui correspond à l'id du societaire qu'on veut supprimer.
+    """
+    @action(detail=False, methods=["delete"], permission_classes = [IsAdminUser])
+    def deleteSocietaire(self, request):
+        table_id = request.data.get("id_societaire")
+        if not table_id:
+            return Response({"message": "id_societaire est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            entry = Societaire.objects.get(id_societaire=table_id)
+            entry.delete()
+            return Response({"message": "Societaire supprime"}, status=status.HTTP_200_OK)
+        except Societaire.DoesNotExist:
+            return Response({"message": "Aucun societaire n'a cette id"}, status=status.HTTP_404_NOT_FOUND)
+    
+    """Permet à un utilisateur disposant des permissions necessaire d'ajouter un societaire
+    Le body de la requete doit contenir tous les champs non nulle de la table, avec les valeurs qui doivent etre mise sur ces champs
+    L'id de l'utilisateur doit exister et ne pas deja etre utiliser dans une autre entrée de societaire
+    Renvoie l'id du societaire ainsi crée
+    """
+    @action(detail=False, methods=["post"], permission_classes = [IsAdminUser])
+    def addSocietaire(self, request):
+        id_utilisateur = request.data.get("id_utilisateur")
+        organisation = request.data.get("organisation")
+        
+        if not all([id_utilisateur, organisation]):
+            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_utilisateur, organisation"}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if Societaire.objects.filter(id_utilisateur=id_utilisateur).exists():
+            return Response({"message": "Cet utilisateur est deja societaire"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            societaire = Societaire(
+                id_utilisateur=id_utilisateur,
+                organisation=organisation
+            )
+            societaire.save()
+
+            return Response({"message": "Societaire cree", "id_societaire": societaire.id_utilisateur}, status=status.HTTP_201_CREATED)
+        except DataError as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    
+    
