@@ -13,6 +13,12 @@ class EvenementAPIView(viewsets.GenericViewSet):
     queryset = Evenement.objects.all()
     serializer_class = EvenementSerializer
 
+    """Permet de recuperer les informations concernant les evenements
+    Le body de la requete doit contenir les champs 'colonne', 'filtre' et 'mode'.
+    'colonne' contient les colonnes sur lesquelles les filtres seront appliqué,
+    'filtre' contient les filtres qui seront appliqué sur les colonnes,
+    'mode' contient la façon d'appliquer le filtre. Les modes possibles sont '==', '>', '>=', '<', '<=', '^'
+    """
     @action(detail=False, methods=["get"])
     def getEvenement(self, request):
         try :
@@ -25,6 +31,12 @@ class EvenementAPIView(viewsets.GenericViewSet):
         except ValueError as e:
             return Response(str(e),status=status.HTTP_403_FORBIDDEN)
         
+    """Permet à un utilisateur disposant des permissions necessaire de recuperer les informations concernant les reservations des evenements
+    Le body de la requete doit contenir les champs 'colonne', 'filtre' et 'mode'.
+    'colonne' contient les colonnes sur lesquelles les filtres seront appliqué,
+    'filtre' contient les filtres qui seront appliqué sur les colonnes,
+    'mode' contient la façon d'appliquer le filtre. Les modes possibles sont '==', '>', '>=', '<', '<=', '^'
+    """
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
     def getReserve(self, request):
         try :

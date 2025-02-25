@@ -13,6 +13,12 @@ class ConnexionAPIView(viewsets.GenericViewSet):
     queryset = Connexion.objects.all()
     serializer_class = ConnexionSerializer
 
+    """Permet à un utilisateur disposant des permissions necessaire de recuperer les jours durant lesquelles des utilisateurs se sont connecté
+    Le body de la requete doit contenir les champs 'colonne', 'filtre' et 'mode'.
+    'colonne' contient les colonnes sur lesquelles les filtres seront appliqué,
+    'filtre' contient les filtres qui seront appliqué sur les colonnes,
+    'mode' contient la façon d'appliquer le filtre. Les modes possibles sont '==', '>', '>=', '<', '<=', '^'
+    """
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
     def getConnexion(self, request):
         try :
@@ -24,7 +30,13 @@ class ConnexionAPIView(viewsets.GenericViewSet):
             return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
         except ValueError as e:
             return Response(str(e),status=status.HTTP_403_FORBIDDEN)
-        
+    
+    """Permet à un utilisateur disposant des permissions necessaire de recuperer les jours de connexion des utilisateurs
+    Le body de la requete doit contenir les champs 'colonne', 'filtre' et 'mode'.
+    'colonne' contient les colonnes sur lesquelles les filtres seront appliqué,
+    'filtre' contient les filtres qui seront appliqué sur les colonnes,
+    'mode' contient la façon d'appliquer le filtre. Les modes possibles sont '==', '>', '>=', '<', '<=', '^'
+    """
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
     def getHistorique(self, request):
         try :

@@ -13,6 +13,12 @@ class PartSocialAPIView(viewsets.GenericViewSet):
     queryset = PartSocial.objects.all()
     serializer_class = PartSocialSerializer
 
+    """Permet à un utilisateur disposant des permissions necessaire de recuperer les informations concernant les parts social des societaires
+    Le body de la requete doit contenir les champs 'colonne', 'filtre' et 'mode'.
+    'colonne' contient les colonnes sur lesquelles les filtres seront appliqué,
+    'filtre' contient les filtres qui seront appliqué sur les colonnes,
+    'mode' contient la façon d'appliquer le filtre. Les modes possibles sont '==', '>', '>=', '<', '<=', '^'
+    """
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
     def getPartSocial(self, request):
         try :
