@@ -155,6 +155,7 @@ def popUtilisateur():
         complement_adresse = "Pres du lac",
         premiere_connexion = datetime.datetime.now(),
         derniere_connexion = datetime.datetime.now(),
+        is_staff=True,
 
         mail = "canard@gmail.com",
     )
