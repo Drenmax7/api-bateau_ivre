@@ -178,7 +178,3 @@ body : {
 - [Django Documentation](https://docs.djangoproject.com/)
 - [Django Rest Framework Documentation](https://www.django-rest-framework.org/)
 
----
-
-✨ **Bonne chance et bon développement !** 🦆💻🚀
-
