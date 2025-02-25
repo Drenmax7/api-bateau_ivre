@@ -40,3 +40,22 @@ def filtreTable(request):
         filtre_dict[f"{col}__{action}"] = filtre[i]
     
     return filtre_dict
+
+def updateTable(request):
+    colonne = request.data.get('colonne',[])
+    valeur = request.data.get('valeur',[])
+
+    if "password" in colonne:
+        raise ValueError("Veuillez utiliser la requete specifique au changement de mot de passe pour le changer")
+
+    taille = min(len(colonne),len(valeur))
+
+    colonne = colonne[:taille]
+    valeur = valeur[:taille]
+
+    filtre_dict = {}
+    for i in range(len(colonne)):
+        col = colonne[i]        
+        filtre_dict[col] = valeur[i]
+    
+    return filtre_dict
