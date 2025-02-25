@@ -188,7 +188,6 @@ def popSocietaire():
             choixOrga = choice(organisations)
 
         listeEntrees.append(Societaire(
-            produit = "Je ne sais pas ce que c'est",
             organisation = choixOrga,
             id_utilisateur = user
         ))
@@ -389,7 +388,7 @@ def popConnexion():
         listeEntrees = []
         for user in subSet:
             listeEntrees.append(HistoriqueConnexion(
-                id_societaire = user,
+                id_utilisateur = user.id_utilisateur,
                 jour = jour
             ))
         HistoriqueConnexion.objects.bulk_create(listeEntrees)
