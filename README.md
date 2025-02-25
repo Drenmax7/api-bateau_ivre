@@ -150,24 +150,29 @@ body : {
 
 - [Liste des URLs d'ajout] 👇
 - `api/utilisateur/addUser/`
+- `api/societaire/addSocietaire/`
 
 </details>
 
 <details>
 <summary><strong>🔄 Mettre à jour des données :</strong></summary>
 
-- [Liste des URLs d'ajout] 👇
+- [Liste des URLs de maj] 👇
 - `api/utilisateur/updateSelfPassword/`
 - `api/utilisateur/updateUserPassword/`
 - `api/utilisateur/updateUser/`
+- `api/societaire/updateSocietaire/`
+
 
 </details>
 
 <details>
 <summary><strong>❌ Supprimer des données :</strong></summary>
 
-- [Liste des URLs d'ajout] 👇
+- [Liste des URLs de supression] 👇
 - `api/utilisateur/deleteUser/`
+- `api/societaire/deleteSocietaire/`
+
 
 </details>
 
