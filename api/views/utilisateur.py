@@ -1,7 +1,7 @@
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser 
 
 from django.core import exceptions
 from django.contrib.auth import authenticate, login
@@ -86,7 +86,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     Le body de la requete doit contenir les champss 'id_utilisateur' et 'password' qui correspondent à 
     l'id de l'utilisateur dont on veut modifier le mot de passe, et au nouveau mot de passe
     """
-    @action(detail=False, methods=["put"], permission_classes = [IsAuthenticated])
+    @action(detail=False, methods=["put"], permission_classes = [IsAdminUser])
     def updateUserPassword(self, request):
         table_id = request.data.get("id_utilisateur")
         if not table_id:
@@ -126,7 +126,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     'colonne' aux champs à modifier,
     'valeur' est la valeur qui sera placé dans le champs
     """
-    @action(detail=False, methods=["put"], permission_classes = [IsAuthenticated])
+    @action(detail=False, methods=["put"], permission_classes = [IsAdminUser])
     def updateUser(self, request):
         table_id = request.data.get("id_utilisateur")
         if not table_id:
@@ -146,7 +146,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     Le body de la requete doit contenir le champs 'id_utilisateur' qui correspond à l'id de l'utilisateur 
     qu'on veut supprimer.
     """
-    @action(detail=False, methods=["delete"], permission_classes = [IsAuthenticated])
+    @action(detail=False, methods=["delete"], permission_classes = [IsAdminUser])
     def deleteUser(self, request):
         table_id = request.data.get("id_utilisateur")
         if not table_id:
@@ -164,7 +164,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     Le mail doit etre unique
     Renvoie l'id de l'utilisateur ainsi crée
     """
-    @action(detail=False, methods=["post"], permission_classes = [IsAuthenticated])
+    @action(detail=False, methods=["post"], permission_classes = [IsAdminUser])
     def addUser(self, request):
         nom = request.data.get("nom")
         prenom = request.data.get("prenom")
