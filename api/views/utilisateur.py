@@ -9,8 +9,10 @@ from django.middleware.csrf import get_token
 from django.db.utils import DataError
 
 from .generalFunctions import filtreTable, updateTable
-from ..models import Utilisateur
+from ..models import Utilisateur, Connexion, HistoriqueConnexion
 from ..serializers import UtilisateurSerializer
+
+import datetime
 
 class UtilisateurAPIView(viewsets.GenericViewSet):
     queryset = Utilisateur.objects.all()
@@ -18,17 +20,39 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     
     """Permet à un utilisateur de se connecter et d'acceder aux requetes sensibles
     Le body de la requete doit contenir les champs 'mail' et 'password' dont les valeurs correspondent aux mail et mot de passe de l'utilisateur
+    Renvoie un token permettant d'identifier la session actuelle, et un deuxieme permettant de passer la verification csrf.
+    Ces 2 tokens sont a passer dans l'url de chaque requete envoyé par la suite à l'api
     """
     @action(detail=False, methods=["post"], authentication_classes = [])
     def login(self, request):
         mail = request.data.get("mail")
         password = request.data.get("password")
 
-        user = authenticate(username=mail, password=password)
-
-        #todo modifié les champs de derniere connexion
-
+        user = authenticate(username=mail, password=password)    
         if user:
+            if user.premiere_connexion == None:
+                user.premiere_connexion = datetime.datetime.now()
+            user.derniere_connexion = datetime.datetime.now()
+            user.save()
+            
+            jour = datetime.datetime.now().strftime("%Y-%m-%d")
+            query = Connexion.objects.filter(jour=jour)
+            if len(query) == 0:
+                connexion = Connexion(
+                    jour=jour
+                )
+                connexion.save()
+            else:
+                connexion = query[0]
+            
+            query = HistoriqueConnexion.objects.filter(jour=connexion,id_utilisateur=user)
+            if len(query) == 0:
+                historique = HistoriqueConnexion(
+                    jour=connexion,
+                    id_utilisateur=user
+                )
+                historique.save()
+
             login(request, user)
             request.session.save()
             sessionid = request.session.session_key
