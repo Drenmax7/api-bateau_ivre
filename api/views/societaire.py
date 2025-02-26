@@ -7,7 +7,7 @@ from django.core import exceptions
 from django.db.utils import DataError
 
 from .generalFunctions import filtreTable, updateTable
-from ..models import Societaire
+from ..models import Societaire, Utilisateur
 from ..serializers import SocietaireSerializer
 
 class SocietaireAPIView(viewsets.GenericViewSet):
@@ -50,6 +50,7 @@ class SocietaireAPIView(viewsets.GenericViewSet):
             return Response({"message": "Aucun societaire n'a cette id"}, status=status.HTTP_404_NOT_FOUND)
 
         try:
+            print(request.data)
             entry.update(**updateTable(request))
             return Response({"message": "Changement effectue"}, status=status.HTTP_200_OK)
         except exceptions.FieldDoesNotExist as e:
@@ -88,14 +89,19 @@ class SocietaireAPIView(viewsets.GenericViewSet):
         if Societaire.objects.filter(id_utilisateur=id_utilisateur).exists():
             return Response({"message": "Cet utilisateur est deja societaire"}, status=status.HTTP_400_BAD_REQUEST)
 
+        query = Utilisateur.objects.filter(id_utilisateur=id_utilisateur)
+        if len(query) == 0:
+            return Response({"message": "Aucun utilisateur n'a cette id"}, status=status.HTTP_400_BAD_REQUEST)
+        utilisateur = query[0]
+
         try:
             societaire = Societaire(
-                id_utilisateur=id_utilisateur,
+                id_utilisateur=utilisateur,
                 organisation=organisation
             )
             societaire.save()
 
-            return Response({"message": "Societaire cree", "id_societaire": societaire.id_utilisateur}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Societaire cree", "id_societaire": societaire.id_societaire}, status=status.HTTP_201_CREATED)
         except DataError as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
