@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,IsAdminUser 
 
 from django.core import exceptions
-from django.db.utils import DataError
 
 from .generalFunctions import filtreTable, updateTable
 from ..models import PartSocial,Societaire
