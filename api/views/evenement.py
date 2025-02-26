@@ -166,7 +166,7 @@ class EvenementAPIView(viewsets.GenericViewSet):
             entry = Reserve.objects.filter(id_evenement=id_evenement, id_utilisateur=id_utilisateur)
             entry.delete()
             return Response({"message": "Reservation supprime"}, status=status.HTTP_200_OK)
-        except Evenement.DoesNotExist:
+        except Reserve.DoesNotExist:
             return Response({"message": "Aucun reservation correspondant à ces id n'a été trouvé"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
