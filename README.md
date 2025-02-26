@@ -156,6 +156,7 @@ body : {
 - `api/partSocial/addPartSocial/`
 - `api/evenement/addEvenement/`
 - `api/evenement/addReservation/`
+- `api/connexion/addConnexion/`
 
 </details>
 
@@ -184,6 +185,7 @@ body : {
 - `api/partSocial/deletePartSocial/`
 - `api/evenement/deleteEvenement/`
 - `api/evenement/deleteReservation/`
+- `api/connexion/deleteConnexion/`
 
 
 </details>
