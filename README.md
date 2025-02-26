@@ -157,6 +157,8 @@ body : {
 - `api/evenement/addEvenement/`
 - `api/evenement/addReservation/`
 - `api/connexion/addConnexion/`
+- `api/chaloupe/addChaloupe/`
+- `api/chaloupe/addRejoint/`
 
 </details>
 
@@ -171,6 +173,8 @@ body : {
 - `api/partSocial/updatePartSocial/`
 - `api/evenement/updateEvenement/`
 - `api/evenement/updateReservation/`
+- `api/chaloupe/updateChaloupe/`
+- `api/chaloupe/updateRejoint/`
 
 
 
@@ -186,6 +190,8 @@ body : {
 - `api/evenement/deleteEvenement/`
 - `api/evenement/deleteReservation/`
 - `api/connexion/deleteConnexion/`
+- `api/chaloupe/deleteChaloupe/`
+- `api/chaloupe/deleteRejoint/`
 
 
 </details>
