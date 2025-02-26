@@ -141,6 +141,8 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
             return Response({"message": "Changement effectue"}, status=status.HTTP_200_OK)
         except exceptions.FieldDoesNotExist as e:
             return Response({"message":f"{e} Les colonnes possible sont {Utilisateur._meta.get_fields()}."},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
     """Permet à un utilisateur disposant des permissions necessaire de supprimer un autre utilisateur
     Le body de la requete doit contenir le champs 'id_utilisateur' qui correspond à l'id de l'utilisateur 
@@ -158,6 +160,8 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
             return Response({"message": "Utilisateur supprime"}, status=status.HTTP_200_OK)
         except Utilisateur.DoesNotExist:
             return Response({"message": "Aucun utilisateur n'a cette id"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
     """Permet à un utilisateur disposant des permissions necessaire d'ajouter un autre utilisateur
     Le body de la requete doit contenir tous les champs non nulle de la table, avec les valeurs qui doivent etre mise sur ces champs
@@ -206,7 +210,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
             user.save()
 
             return Response({"message": "Utilisateur cree", "id_utilisateur": user.id_utilisateur}, status=status.HTTP_201_CREATED)
-        except DataError as e:
+        except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 

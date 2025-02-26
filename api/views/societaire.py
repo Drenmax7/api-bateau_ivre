@@ -32,7 +32,6 @@ class SocietaireAPIView(viewsets.GenericViewSet):
         except ValueError as e:
             return Response(str(e),status=status.HTTP_403_FORBIDDEN)
     
-        
     """Permet à un utilisateur disposant des permissions necessaire de modifier les informations concernant un societaire
     Le body de la requete doit contenir les champs 'id_societaire', 'colonne', 'valeur'.
     'id_societaire' correspond à l'id du societaire dont on veut modifier les informations, 
@@ -50,11 +49,12 @@ class SocietaireAPIView(viewsets.GenericViewSet):
             return Response({"message": "Aucun societaire n'a cette id"}, status=status.HTTP_404_NOT_FOUND)
 
         try:
-            print(request.data)
             entry.update(**updateTable(request))
             return Response({"message": "Changement effectue"}, status=status.HTTP_200_OK)
         except exceptions.FieldDoesNotExist as e:
             return Response({"message":f"{e} Les colonnes possible sont {Societaire._meta.get_fields()}."},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
     """Permet à un utilisateur disposant des permissions necessaire de supprimer un societaire
     Le body de la requete doit contenir le champs 'id_societaire' qui correspond à l'id du societaire qu'on veut supprimer.
@@ -71,6 +71,8 @@ class SocietaireAPIView(viewsets.GenericViewSet):
             return Response({"message": "Societaire supprime"}, status=status.HTTP_200_OK)
         except Societaire.DoesNotExist:
             return Response({"message": "Aucun societaire n'a cette id"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
     """Permet à un utilisateur disposant des permissions necessaire d'ajouter un societaire
     Le body de la requete doit contenir tous les champs non nulle de la table, avec les valeurs qui doivent etre mise sur ces champs
@@ -102,7 +104,7 @@ class SocietaireAPIView(viewsets.GenericViewSet):
             societaire.save()
 
             return Response({"message": "Societaire cree", "id_societaire": societaire.id_societaire}, status=status.HTTP_201_CREATED)
-        except DataError as e:
+        except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
