@@ -143,6 +143,8 @@ body : {
 
 ---
 
+- `api/connexion/compteConnexion`
+
 </details>
 
 <details>
