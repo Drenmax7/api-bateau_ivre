@@ -64,7 +64,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     """Permet à un utilisateur connecté de recuperer les informations le concernant
     """
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
-    def getLoginUser(self, request):     
+    def getLoginUser(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
     
