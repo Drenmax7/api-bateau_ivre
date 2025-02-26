@@ -159,6 +159,7 @@ body : {
 - `api/connexion/addConnexion/`
 - `api/chaloupe/addChaloupe/`
 - `api/chaloupe/addRejoint/`
+- `api/chaloupe/addSelfRejoint/`
 
 </details>
 
@@ -192,6 +193,7 @@ body : {
 - `api/connexion/deleteConnexion/`
 - `api/chaloupe/deleteChaloupe/`
 - `api/chaloupe/deleteRejoint/`
+- `api/chaloupe/deleteSelfRejoint/`
 
 
 </details>
