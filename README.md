@@ -153,6 +153,9 @@ body : {
 - [Liste des URLs d'ajout] 👇
 - `api/utilisateur/addUser/`
 - `api/societaire/addSocietaire/`
+- `api/partSocial/addPartSocial/`
+- `api/evenement/addEvenement/`
+- `api/evenement/addReservation/`
 
 </details>
 
@@ -164,6 +167,10 @@ body : {
 - `api/utilisateur/updateUserPassword/`
 - `api/utilisateur/updateUser/`
 - `api/societaire/updateSocietaire/`
+- `api/partSocial/updatePartSocial/`
+- `api/evenement/updateEvenement/`
+- `api/evenement/updateReservation/`
+
 
 
 </details>
@@ -174,6 +181,9 @@ body : {
 - [Liste des URLs de supression] 👇
 - `api/utilisateur/deleteUser/`
 - `api/societaire/deleteSocietaire/`
+- `api/partSocial/deletePartSocial/`
+- `api/evenement/deleteEvenement/`
+- `api/evenement/deleteReservation/`
 
 
 </details>
