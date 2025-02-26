@@ -13,6 +13,8 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
     queryset = Chaloupe.objects.all()
     serializer_class = ChaloupeSerializer
 
+    #delete self participation, add self participation
+
     """Permet à un utilisateur disposant des permissions necessaire de recuperer les informations concernant des chaloupes
     Le body de la requete doit contenir les champs 'colonne', 'filtre' et 'mode'.
     'colonne' contient les colonnes sur lesquelles les filtres seront appliqué,
@@ -98,6 +100,64 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+    """Permet à un utilisateur connecté de supprimer sa participation à une chaloupe
+    Le body de la requete doit contenir le champs 'id_chaloupe' qui correspond à la chaloupe que l'utilisateur souhaite quitter
+    """
+    @action(detail=False, methods=["delete"], permission_classes = [IsAuthenticated])
+    def deleteSelfRejoint(self, request):
+        id_chaloupe = request.data.get("id_chaloupe")
+        if not id_chaloupe:
+            return Response({"message": "id_chaloupe est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        query = Societaire.objects.filter(id_utilisateur=request.user)
+        if len(query) == 0:
+            return Response({"message": "L'utilisateur n'est pas societaire"}, status=status.HTTP_403_FORBIDDEN)
+        societaire = query[0]
+
+        try:
+            entry = Rejoint.objects.get(id_chaloupe=id_chaloupe, id_societaire=societaire)
+            entry.delete()
+            return Response({"message": "Participation supprime"}, status=status.HTTP_200_OK)
+        except Rejoint.DoesNotExist:
+            return Response({"message": "Aucune participation n'a ces id"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    """Permet à un utilisateur connecté de rejoindre sa participation à une chaloupe
+    Le body de la requete doit contenir le champs 'id_chaloupe' qui correspond à la chaloupe que l'utilisateur souhaite rejoindre
+    """
+    @action(detail=False, methods=["post"], permission_classes = [IsAuthenticated])
+    def addSelfRejoint(self, request):
+        id_chaloupe = request.data.get("id_chaloupe")
+        
+        if not all([id_chaloupe]):
+            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_chaloupe"}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+        query = Societaire.objects.filter(id_utilisateur=request.user)
+        if len(query) == 0:
+            return Response({"message": "L'utilisateur n'est pas societaire"}, status=status.HTTP_403_FORBIDDEN)
+        societaire = query[0]
+
+        query = Chaloupe.objects.filter(id_chaloupe=id_chaloupe)
+        if len(query) == 0:
+            return Response({"message": "Aucune chaloupe n'a cette id"}, status=status.HTTP_400_BAD_REQUEST)
+        chaloupe = query[0]
+
+        try:
+            rejoint = Rejoint(
+                id_societaire = societaire,
+                id_chaloupe = chaloupe,
+                dirige = 0
+            )
+            rejoint.save()
+
+            return Response({"message": "Participation cree"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
     """Permet à un utilisateur disposant des permissions necessaire de recuperer les societaires appartenant a une chaloupe
     Le body de la requete doit contenir les champs 'colonne', 'filtre' et 'mode'.
     'colonne' contient les colonnes sur lesquelles les filtres seront appliqué,
@@ -149,7 +209,6 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
     """
     @action(detail=False, methods=["delete"], permission_classes = [IsAdminUser])
     def deleteRejoint(self, request):
-        print("delete rejoin\n\n\n")
         id_chaloupe = request.data.get("id_chaloupe")
         if not id_chaloupe:
             return Response({"message": "id_chaloupe est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
@@ -203,4 +262,3 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-#delete self participation, add self participation
