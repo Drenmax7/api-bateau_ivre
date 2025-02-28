@@ -94,12 +94,16 @@ class PartSocialAPIView(viewsets.GenericViewSet):
             return Response({"message": "Aucun societaire n'a cette id"}, status=status.HTTP_400_BAD_REQUEST)
         societaire = query[0]
 
+        query = PartSocial.objects.filter(id_societaire=societaire)
+        numero_achat = len(query)+1
+
         try:
             part = PartSocial(
                 date_achat = date_achat,
                 quantite = quantite,
                 num_facture = num_facture,
-                id_societaire = societaire
+                id_societaire = societaire,
+                numero_achat = numero_achat
             )
             part.save()
 
