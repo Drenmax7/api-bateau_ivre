@@ -36,6 +36,13 @@ python -m manage makemigrations
 python -m manage migrate
 ```
 
+## 🧪 **Vérifier le bon fonctionnement**
+
+Pour vérifier qu'il n'y a pas de problème de configuration et que l'api marche, vous pouvez lancer les tests fonctionnelles de l'application :
+```bash
+python -m manage test
+```
+
 ## 🚀 **Démarrer le Serveur**
 
 Pour lancer le serveur, utilisez cette commande :
