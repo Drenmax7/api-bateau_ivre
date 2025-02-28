@@ -31,6 +31,8 @@ class Utilisateur(AbstractBaseUser):
     adresse = models.CharField(max_length=200)
     ville = models.CharField(max_length=50)
     pays = models.CharField(max_length=50)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
     code_postal = models.CharField(max_length=6, blank=True, null=True)
     telephone = models.CharField(max_length=15)
     complement_adresse = models.CharField(max_length=100, blank=True, null=True)
