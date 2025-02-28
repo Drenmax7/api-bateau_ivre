@@ -189,8 +189,6 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
         if Utilisateur.objects.filter(mail=mail).exists():
             return Response({"message": "Ce mail est deja pris"}, status=status.HTTP_400_BAD_REQUEST)
         
-
-
         try:
             user = Utilisateur(
                 nom = nom,
@@ -204,6 +202,8 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
                 complement_adresse = complement_adresse,
                 premiere_connexion = None,
                 derniere_connexion = None,
+                longitude = None,
+                latitude = None,
 
                 mail = mail,
             )
