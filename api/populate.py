@@ -13,6 +13,8 @@ from time import time
 def populate(request):
     debut = time()
     
+    popCollege()
+
     popUtilisateur()
     popSocietaire()
 
@@ -27,6 +29,16 @@ def populate(request):
     popConnexion()
     
     return JsonResponse({"message": "Importation reussie en {}s".format(round(time()-debut,3))})
+
+def popCollege():
+    print("college")
+
+    noms = ["Citoyen", "Personne Morale", "Entreprise","Collectivité Teritorial", "Salarié"]
+    for nom in noms:
+        college = College(
+            nom = nom
+        )
+        college.save()
 
 def popUtilisateur():
     print('utilisateur')
@@ -113,6 +125,9 @@ def popUtilisateur():
             tel = f"0{choice([6,7])}" + str(randint(0,10**8-1)).zfill(8)
             comp = choice(complements_d_adresse)
 
+            longitude = 2.3512712112122625 + randint(-50000,50000)/10000
+            latitude = 48.86363566675727 + randint(-50000,50000)/10000
+
             premiere = None
             #chance qu'un utilisateur se soit un jour connecté
             if (randint(0,9) >= 2):
@@ -133,6 +148,8 @@ def popUtilisateur():
                 ville = ville,
                 pays = pays,
                 code_postal = codePostal,
+                longitude = longitude,
+                latitude = latitude,
                 telephone = tel,
                 complement_adresse = comp,
                 premiere_connexion = premiere,
@@ -176,6 +193,7 @@ def popSocietaire():
         "AilesSolutions", "DuckEmpire", "PlumerieMobile", "TechnoCanard", "DuckWorks",
         "PlumeConnect", "DigitalFeather", "SplashTech", "CanardFusion"
     ]
+    nomCollege = ["Citoyen", "Personne Morale", "Entreprise","Collectivité Teritorial", "Salarié"]
 
     listeEntrees = []
 
@@ -184,13 +202,18 @@ def popSocietaire():
         if (randint(1,20) != 20):
             continue
         
+        college = College.objects.get(nom=choice(nomCollege))
         choixOrga = "N/a"
-        if randint(1,10) == 10:
+        if college.nom == "Entreprise":
             choixOrga = choice(organisations)
+
+        numero_societaire = f"Soc-{str(randint(0, 1000000000)).zfill(10)}-batIvre"
 
         listeEntrees.append(Societaire(
             organisation = choixOrga,
-            id_utilisateur = user
+            id_utilisateur = user,
+            numero_societaire = numero_societaire,
+            college = college
         ))
 
 
@@ -363,6 +386,7 @@ def popPartSocial():
             quantite = expovariate(1/3) +1 ,
             num_facture = "FAC-{}-SOC".format(format(randint(0, 16**6-1), 'x')),
             id_societaire = user,
+            numero_achat = 1
         ))
 
 
