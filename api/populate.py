@@ -170,6 +170,8 @@ def popUtilisateur():
         code_postal = "77700",
         telephone = "0612345678",
         complement_adresse = "Pres du lac",
+        longitude = 2.3512712112122625,
+        latitude = 48.86363566675727,
         premiere_connexion = datetime.datetime.now(),
         derniere_connexion = datetime.datetime.now(),
         is_staff=True,
