@@ -51,7 +51,7 @@ class PartSocialAPIView(viewsets.GenericViewSet):
             entry.update(**updateTable(request))
             return Response({"message": "Changement effectue"}, status=status.HTTP_200_OK)
         except exceptions.FieldDoesNotExist as e:
-            return Response({"message":f"{e} Les colonnes possible sont {PartSocial._meta.get_fields()}."},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message":f"{e} Les colonnes possible sont {[field.name for field in PartSocial._meta.concrete_fields]}."},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
