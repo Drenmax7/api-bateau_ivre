@@ -22,8 +22,8 @@ class PartSocialAPIView(viewsets.GenericViewSet):
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
     def getPartSocial(self, request):
         try :
-            utilisateurs = PartSocial.objects.filter(**filtreTable(request))
-            serializer = self.get_serializer(utilisateurs, many=True)
+            part = PartSocial.objects.filter(**filtreTable(request))
+            serializer = self.get_serializer(part, many=True)
             return Response(serializer.data)
 
         except exceptions.FieldError as e:
