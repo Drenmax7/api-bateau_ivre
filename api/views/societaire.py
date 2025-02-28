@@ -7,8 +7,12 @@ from django.core import exceptions
 from django.db.utils import DataError
 
 from .generalFunctions import filtreTable, updateTable
-from ..models import Societaire, Utilisateur
-from ..serializers import SocietaireSerializer
+from ..models import Societaire, Utilisateur, College
+from ..serializers import SocietaireSerializer, CollegeSerializer
+
+from geopy.geocoders import Nominatim
+
+geolocator = Nominatim(user_agent="geo_duck")
 
 class SocietaireAPIView(viewsets.GenericViewSet):
     queryset = Societaire.objects.all()
@@ -83,9 +87,11 @@ class SocietaireAPIView(viewsets.GenericViewSet):
     def addSocietaire(self, request):
         id_utilisateur = request.data.get("id_utilisateur")
         organisation = request.data.get("organisation")
+        numero_societaire = request.data.get("numero_societaire")
+        college = request.data.get("college")
         
-        if not all([id_utilisateur, organisation]):
-            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_utilisateur, organisation"}, 
+        if not all([id_utilisateur, organisation, numero_societaire, college]):
+            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_utilisateur, organisation, numero_societaire, college"}, 
                             status=status.HTTP_400_BAD_REQUEST)
 
         if Societaire.objects.filter(id_utilisateur=id_utilisateur).exists():
@@ -94,12 +100,31 @@ class SocietaireAPIView(viewsets.GenericViewSet):
         query = Utilisateur.objects.filter(id_utilisateur=id_utilisateur)
         if len(query) == 0:
             return Response({"message": "Aucun utilisateur n'a cette id"}, status=status.HTTP_400_BAD_REQUEST)
-        utilisateur = query[0]
+        user = query[0]
+        
+        query = College.objects.filter(nom=college)
+        if len(query) == 0:
+            return Response({"message": f"Aucun college n'a ce nom. Voici la liste des colleges : {CollegeSerializer(College.objects.all()).data}"}, status=status.HTTP_400_BAD_REQUEST)
+        college = query[0]
+
+        location = geolocator.geocode(f"{user.adresse}, {user.ville}, {user.pays}")
+        if location == None:
+            location = geolocator.geocode(f"{user.ville}, {user.pays}")
+        if location == None:
+            location = geolocator.geocode(f"{user.code_postal}")
+        
+        if location != None:
+            user.latitude = location.latitude
+            user.longitude = location.longitude
+            user.save()
+        
 
         try:
             societaire = Societaire(
-                id_utilisateur=utilisateur,
-                organisation=organisation
+                id_utilisateur=user,
+                organisation=organisation,
+                college = college,
+                numero_societaire = numero_societaire
             )
             societaire.save()
 
