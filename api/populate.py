@@ -33,7 +33,7 @@ def populate(request):
 def popCollege():
     print("college")
 
-    noms = ["Citoyen", "Personne Morale", "Entreprise","Collectivité Teritorial", "Salarié"]
+    noms = ["Citoyen", "Personne Morale", "Entreprise","Collectivité Territoriale", "Salarié"]
     for nom in noms:
         college = College(
             nom = nom
@@ -195,7 +195,7 @@ def popSocietaire():
         "AilesSolutions", "DuckEmpire", "PlumerieMobile", "TechnoCanard", "DuckWorks",
         "PlumeConnect", "DigitalFeather", "SplashTech", "CanardFusion"
     ]
-    nomCollege = ["Citoyen", "Personne Morale", "Entreprise","Collectivité Teritorial", "Salarié"]
+    nomCollege = ["Citoyen", "Personne Morale", "Entreprise","Collectivité Territoriale", "Salarié"]
 
     listeEntrees = []
 
