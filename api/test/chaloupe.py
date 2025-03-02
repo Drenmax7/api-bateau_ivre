@@ -1,7 +1,4 @@
-from django.test import TestCase
-from django.urls import reverse
-
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
 
 from ..models import Chaloupe, Utilisateur
@@ -9,7 +6,7 @@ from ..models import Chaloupe, Utilisateur
 from urllib.parse import urlencode
 
 
-class ChaloupeTest_correctUse(TestCase):
+class ChaloupeTest_correctUse(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = Utilisateur.objects.create_user(mail="testuser", password="password")
