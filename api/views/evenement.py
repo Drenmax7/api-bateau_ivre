@@ -109,7 +109,7 @@ class EvenementAPIView(viewsets.GenericViewSet):
     'mode' contient la façon d'appliquer le filtre. Les modes possibles sont '==', '>', '>=', '<', '<=', '^'
     """
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
-    def getReserve(self, request):
+    def getReservation(self, request):
         try :
             utilisateurs = Reserve.objects.filter(**filtreTable(request))
             serializer = ReserveSerializer(utilisateurs, many=True)
