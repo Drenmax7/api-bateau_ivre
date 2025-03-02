@@ -84,7 +84,7 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
         nom = request.data.get("nom")
         description = request.data.get("description")
         
-        if not all([nom, description]):
+        if not all([i != None for i in [nom, description]]):
             return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : nom, description"}, 
                             status=status.HTTP_400_BAD_REQUEST)
         

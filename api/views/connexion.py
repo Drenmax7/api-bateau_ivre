@@ -105,7 +105,7 @@ class ConnexionAPIView(viewsets.GenericViewSet):
         id_utilisateur = request.data.get("id_utilisateur")
         jour = request.data.get("jour")
         
-        if not all([id_utilisateur, jour]):
+        if not all([i != None for i in [id_utilisateur, jour]]):
             return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_utilisateur, jour"}, 
                             status=status.HTTP_400_BAD_REQUEST)
         

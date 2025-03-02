@@ -182,8 +182,9 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
         mail = request.data.get("mail")
         password = request.data.get("password")
         
-        if not all([nom, prenom, civilite, adresse, ville, pays, code_postal, telephone, complement_adresse, mail, password]):
-            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : nom, prenom, civilite, adresse, ville, pays, code_postal, telephone, complement_adresse, mail, password"}, 
+        if not all([i != None for i in [nom, prenom, civilite, adresse, ville, pays, code_postal, telephone, complement_adresse, mail, password]]):
+            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : nom, prenom, civilite, \
+                             adresse, ville, pays, code_postal, telephone, complement_adresse, mail, password"}, 
                             status=status.HTTP_400_BAD_REQUEST)
 
         if Utilisateur.objects.filter(mail=mail).exists():

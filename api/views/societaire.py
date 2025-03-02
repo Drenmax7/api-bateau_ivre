@@ -90,7 +90,7 @@ class SocietaireAPIView(viewsets.GenericViewSet):
         numero_societaire = request.data.get("numero_societaire")
         college = request.data.get("college")
         
-        if not all([id_utilisateur, organisation, numero_societaire, college]):
+        if not all([i != None for i in [id_utilisateur, organisation, numero_societaire, college]]):
             return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_utilisateur, organisation, numero_societaire, college"}, 
                             status=status.HTTP_400_BAD_REQUEST)
 

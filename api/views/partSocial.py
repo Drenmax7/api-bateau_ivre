@@ -85,7 +85,7 @@ class PartSocialAPIView(viewsets.GenericViewSet):
         num_facture = request.data.get("num_facture")
         id_societaire = request.data.get("id_societaire")
         
-        if not all([date_achat, quantite, num_facture, id_societaire]):
+        if not all([i != None for i in [date_achat, quantite, num_facture, id_societaire]]):
             return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : date_achat, quantite, num_facture, id_societaire"}, 
                             status=status.HTTP_400_BAD_REQUEST)
         

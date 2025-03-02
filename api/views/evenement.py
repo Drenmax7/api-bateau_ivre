@@ -84,7 +84,7 @@ class EvenementAPIView(viewsets.GenericViewSet):
         titre = request.data.get("titre")
         description = request.data.get("description")
         
-        if not all([place_disponible, date_evenement, titre, description]):
+        if not all([i != None for i in [place_disponible, date_evenement, titre, description]]):
             return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : place_disponible, date_evenement, titre, description"}, 
                             status=status.HTTP_400_BAD_REQUEST)
 
@@ -181,7 +181,7 @@ class EvenementAPIView(viewsets.GenericViewSet):
         id_evenement = request.data.get("id_evenement")
         nb_place = request.data.get("nb_place")
         
-        if not all([id_utilisateur, id_evenement, nb_place]):
+        if not all([i != None for i in [id_utilisateur, id_evenement, nb_place]]):
             return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_utilisateur, id_evenement, nb_place"}, 
                             status=status.HTTP_400_BAD_REQUEST)
 
