@@ -106,11 +106,13 @@ class SocietaireAPIView(viewsets.GenericViewSet):
         if len(query) == 0:
             return Response({"message": f"Aucun college n'a ce nom. Voici la liste des colleges : {CollegeSerializer(College.objects.all()).data}"}, status=status.HTTP_400_BAD_REQUEST)
         college = query[0]
-
-        location = geolocator.geocode(f"{user.adresse}, {user.ville}, {user.pays}")
-        if location == None:
+        
+        location = None
+        if location == None and user.ville and user.pays and user.adresse:
+            location = geolocator.geocode(f"{user.adresse}, {user.ville}, {user.pays}")
+        if location == None and user.ville and user.pays:
             location = geolocator.geocode(f"{user.ville}, {user.pays}")
-        if location == None:
+        if location == None and user.code_postal:
             location = geolocator.geocode(f"{user.code_postal}")
         
         if location != None:
