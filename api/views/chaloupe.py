@@ -236,7 +236,7 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
         id_chaloupe = request.data.get("id_chaloupe")
         dirige = request.data.get("dirige")
         
-        if not all([id_societaire, id_chaloupe, dirige]):
+        if not all([i != None for i in [id_societaire, id_chaloupe, dirige]]):
             return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_societaire, id_chaloupe, dirige"}, 
                             status=status.HTTP_400_BAD_REQUEST)
         
