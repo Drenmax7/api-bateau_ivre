@@ -3,7 +3,7 @@ from rest_framework.test import APIClient
 
 from urllib.parse import urlencode
 
-from api.models import Evenement, Utilisateur
+from api.models import Evenement, Utilisateur, Reserve
 
 class EvenementTest(APITestCase):
     def setUp(self):
@@ -107,3 +107,98 @@ class EvenementTest(APITestCase):
         # vérifie que la ligne récupérée est bien celle qui est cherchée
         id_recup = data[0]["id_evenement"]
         self.assertEqual(id_recup, id_evenement)
+
+
+class ReserveTest_correctUse(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = Utilisateur.objects.create_user(mail="testuser", password="password")
+        self.user.is_staff = True
+        self.client.force_authenticate(user=self.user)
+
+        self.utilisateur = Utilisateur.objects.create(
+            mail="partsocial@test.com",
+            nom="Doe",
+            prenom="John",
+            telephone="0123456789"
+        )
+
+        self.evenement = Evenement.objects.create(
+            place_disponible = 50,
+            date_evenement = "2025-06-15 14:00:00",
+            titre = "Concert de Rock",
+            description = "Un super concert en plein air !"
+        )
+        
+        self.data = {"nb_place": 3, "id_utilisateur":self.utilisateur.id_utilisateur,"id_evenement":self.evenement.id_evenement}
+
+
+    def test_add(self):
+        url = "/api/evenement/addReservation/"
+        response = self.client.post(url, self.data, format="json")
+
+        #requete traité correctement
+        self.assertEqual(response.status_code, 201) 
+
+        query = Reserve.objects.filter(id_utilisateur=self.data["id_utilisateur"], id_evenement=self.data["id_evenement"])
+        
+        #verifie l'existence de la reservation
+        self.assertEqual(len(query), 1)
+
+        entree = query[0]
+        #verifie que les valeurs sont les bonnes
+        self.assertEqual(entree.nb_place, self.data["nb_place"])
+
+    def test_delete(self):
+        #cree une chaloupe
+        url = "/api/evenement/addReservation/"
+        response = self.client.post(url, self.data, format="json")
+
+        url = "/api/evenement/deleteReservation/"
+        response = self.client.delete(url, {"id_utilisateur":self.data["id_utilisateur"], "id_evenement":self.data["id_evenement"]}, format="json")
+
+        #requete traité correctement
+        self.assertEqual(response.status_code, 200)
+
+        query = Reserve.objects.filter(id_utilisateur=self.data["id_utilisateur"], id_evenement=self.data["id_evenement"])
+        #verifie la supression de la reservation
+        self.assertEqual(len(query), 0)
+
+    def test_update(self):
+        url = "/api/evenement/addReservation/"
+        response = self.client.post(url, self.data, format="json")
+
+        url = "/api/evenement/updateReservation/"
+        newData = {"id_utilisateur":self.data["id_utilisateur"], "id_evenement":self.data["id_evenement"], "colonne": ["nb_place"], "valeur" : [10]}
+        response = self.client.put(url, newData, format="json")
+
+        #requete traité correctement
+        self.assertEqual(response.status_code, 200)
+
+        query = Reserve.objects.filter(id_utilisateur=self.data["id_utilisateur"], id_evenement=self.data["id_evenement"])
+        entree = query[0]
+        #verifie la modification de la chaloupe
+        self.assertEqual(entree.nb_place, newData["valeur"][0])
+
+    def test_get(self):
+        #cree une chaloupe
+        url = "/api/evenement/addReservation/"
+        response = self.client.post(url, self.data, format="json")
+
+        param = {"colonne": ["id_utilisateur", "id_evenement"], "filtre" : [self.data["id_utilisateur"], self.data["id_evenement"]], "mode":["==", "=="]}
+        query_string = urlencode(param, doseq=True)
+        url = f"/api/evenement/getReservation/?{query_string}"
+        response = self.client.get(url, format="json")
+        
+        #requete traité correctement
+        self.assertEqual(response.status_code, 200)
+        
+        #verifie qu'une ligne est récupéré
+        data = response.json()
+        self.assertEqual(len(data), 1)
+
+        #verifie que la ligne récupéré est bien celle qui est cherché
+        self.assertEqual(data[0]["id_utilisateur"], self.data["id_utilisateur"])
+        self.assertEqual(data[0]["id_evenement"], self.data["id_evenement"])
+        self.assertEqual(data[0]["nb_place"], self.data["nb_place"])
+
