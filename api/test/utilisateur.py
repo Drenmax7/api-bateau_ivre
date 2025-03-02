@@ -1,6 +1,8 @@
 from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
+
 from urllib.parse import urlencode
+
 from api.models import Utilisateur
 
 class UtilisateurTest(APITestCase):
@@ -46,7 +48,6 @@ class UtilisateurTest(APITestCase):
         # Crée un utilisateur
         url = "/api/utilisateur/addUser/"
         response = self.client.post(url, self.data, format="json")
-        print(response.json())
         id_utilisateur = response.json()["id_utilisateur"]
 
         # Supprime l'utilisateur
