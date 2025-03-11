@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.core import exceptions
 
 from .generalFunctions import filtreTable, updateTable
-from ..models import Chaloupe, Rejoint, Societaire
+from ..models import Chaloupe, Rejoint, Utilisateur
 from ..serializers import ChaloupeSerializer, RejointSerializer
 
 class ChaloupeAPIView(viewsets.GenericViewSet):
@@ -110,13 +110,13 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
         if not id_chaloupe:
             return Response({"message": "id_chaloupe est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
         
-        query = Societaire.objects.filter(id_utilisateur=request.user)
+        query = Utilisateur.objects.filter(id_utilisateur=request.user)
         if len(query) == 0:
-            return Response({"message": "L'utilisateur n'est pas societaire"}, status=status.HTTP_403_FORBIDDEN)
-        societaire = query[0]
+            return Response({"message": "L'utilisateur n'est pas utilisateur"}, status=status.HTTP_403_FORBIDDEN)
+        utilisateur = query[0]
 
         try:
-            entry = Rejoint.objects.get(id_chaloupe=id_chaloupe, id_societaire=societaire)
+            entry = Rejoint.objects.get(id_chaloupe=id_chaloupe, id_utilisateur=utilisateur)
             entry.delete()
             return Response({"message": "Participation supprime"}, status=status.HTTP_200_OK)
         except Rejoint.DoesNotExist:
@@ -135,10 +135,10 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
             return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_chaloupe"}, 
                             status=status.HTTP_400_BAD_REQUEST)
         
-        query = Societaire.objects.filter(id_utilisateur=request.user)
+        query = Utilisateur.objects.filter(id_utilisateur=request.user)
         if len(query) == 0:
-            return Response({"message": "L'utilisateur n'est pas societaire"}, status=status.HTTP_403_FORBIDDEN)
-        societaire = query[0]
+            return Response({"message": "L'utilisateur n'est pas utilisateur"}, status=status.HTTP_403_FORBIDDEN)
+        utilisateur = query[0]
 
         query = Chaloupe.objects.filter(id_chaloupe=id_chaloupe)
         if len(query) == 0:
@@ -147,7 +147,7 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
 
         try:
             rejoint = Rejoint(
-                id_societaire = societaire,
+                id_utilisateur = utilisateur,
                 id_chaloupe = chaloupe,
                 dirige = 0
             )
@@ -158,7 +158,7 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-    """Permet à un utilisateur disposant des permissions necessaire de recuperer les societaires appartenant a une chaloupe
+    """Permet à un utilisateur disposant des permissions necessaire de recuperer les utilisateur appartenant a une chaloupe
     Le body de la requete doit contenir les champs 'colonne', 'filtre' et 'mode'.
     'colonne' contient les colonnes sur lesquelles les filtres seront appliqué,
     'filtre' contient les filtres qui seront appliqué sur les colonnes,
@@ -176,9 +176,9 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
         except ValueError as e:
             return Response(str(e),status=status.HTTP_403_FORBIDDEN)
 
-    """Permet à un utilisateur disposant des permissions necessaire de modifier la participation d'un societaire a une chaloupe
-    Le body de la requete doit contenir les champs 'id_societaire', 'id_chaloupe', 'colonne', 'valeur'.
-    'id_societaire' et 'id_chaloupe' identifient la participation dont on veut modifier les informations, 
+    """Permet à un utilisateur disposant des permissions necessaire de modifier la participation d'un utilisateur a une chaloupe
+    Le body de la requete doit contenir les champs 'id_utilisateur', 'id_chaloupe', 'colonne', 'valeur'.
+    'id_utilisateur' et 'id_chaloupe' identifient la participation dont on veut modifier les informations, 
     'colonne' aux champs à modifier,
     'valeur' est la valeur qui sera placé dans le champs
     """
@@ -188,11 +188,11 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
         if not id_chaloupe:
             return Response({"message": "id_chaloupe est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
         
-        id_societaire = request.data.get("id_societaire")
-        if not id_societaire:
-            return Response({"message": "id_societaire est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+        id_utilisateur = request.data.get("id_utilisateur")
+        if not id_utilisateur:
+            return Response({"message": "id_utilisateur est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
 
-        entry = Rejoint.objects.filter(id_societaire=id_societaire, id_chaloupe=id_chaloupe)
+        entry = Rejoint.objects.filter(id_utilisateur=id_utilisateur, id_chaloupe=id_chaloupe)
         if len(entry) == 0:
             return Response({"message": "Aucune participation correspondant à ces id n'a été trouvé"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -205,7 +205,7 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
     """Permet à un utilisateur disposant des permissions necessaire de supprimer la participation d'un utilisateur à une chaloupe
-    Le body de la requete doit contenir le champs 'id_societaire' et 'id_chaloupe' qui identifient la participation que l'on veut supprimer
+    Le body de la requete doit contenir le champs 'id_utilisateur' et 'id_chaloupe' qui identifient la participation que l'on veut supprimer
     """
     @action(detail=False, methods=["delete"], permission_classes = [IsAdminUser])
     def deleteRejoint(self, request):
@@ -213,12 +213,12 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
         if not id_chaloupe:
             return Response({"message": "id_chaloupe est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
         
-        id_societaire = request.data.get("id_societaire")
-        if not id_societaire:
-            return Response({"message": "id_societaire est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+        id_utilisateur = request.data.get("id_utilisateur")
+        if not id_utilisateur:
+            return Response({"message": "id_utilisateur est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            entry = Rejoint.objects.get(id_chaloupe=id_chaloupe, id_societaire=id_societaire)
+            entry = Rejoint.objects.get(id_chaloupe=id_chaloupe, id_utilisateur=id_utilisateur)
             entry.delete()
             return Response({"message": "Participation supprime"}, status=status.HTTP_200_OK)
         except Rejoint.DoesNotExist:
@@ -232,18 +232,18 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
     """
     @action(detail=False, methods=["post"], permission_classes = [IsAdminUser])
     def addRejoint(self, request):
-        id_societaire = request.data.get("id_societaire")
+        id_utilisateur = request.data.get("id_utilisateur")
         id_chaloupe = request.data.get("id_chaloupe")
         dirige = request.data.get("dirige")
         
-        if not all([i != None for i in [id_societaire, id_chaloupe, dirige]]):
-            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_societaire, id_chaloupe, dirige"}, 
+        if not all([i != None for i in [id_utilisateur, id_chaloupe, dirige]]):
+            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_utilisateur, id_chaloupe, dirige"}, 
                             status=status.HTTP_400_BAD_REQUEST)
         
-        query = Societaire.objects.filter(id_societaire=id_societaire)
+        query = Utilisateur.objects.filter(id_utilisateur=id_utilisateur)
         if len(query) == 0:
-            return Response({"message": "Aucun societaire n'a cette id"}, status=status.HTTP_400_BAD_REQUEST)
-        societaire = query[0]
+            return Response({"message": "Aucun utilisateur n'a cette id"}, status=status.HTTP_400_BAD_REQUEST)
+        utilisateur = query[0]
 
         query = Chaloupe.objects.filter(id_chaloupe=id_chaloupe)
         if len(query) == 0:
@@ -252,7 +252,7 @@ class ChaloupeAPIView(viewsets.GenericViewSet):
 
         try:
             rejoint = Rejoint(
-                id_societaire = societaire,
+                id_utilisateur = utilisateur,
                 id_chaloupe = chaloupe,
                 dirige = dirige
             )

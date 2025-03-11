@@ -351,7 +351,7 @@ def popRejoint():
     listeEntrees = []
 
     chaloupes = list(Chaloupe.objects.all())
-    users = list(Societaire.objects.all())
+    users = list(Utilisateur.objects.all())
 
     for chaloupe in chaloupes:
         nbPersonne = int(max(1,normalvariate(20,5)))
@@ -366,7 +366,7 @@ def popRejoint():
             present.append(user.id_utilisateur)
 
             listeEntrees.append(Rejoint(
-                id_societaire = user,
+                id_utilisateur = user,
                 id_chaloupe = chaloupe,
                 dirige = i==0,
             ))
