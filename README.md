@@ -111,7 +111,7 @@ Assurez-vous de toujours envoyer ces tokens afin de garantir que vos requêtes s
 ---
 
 #### 🎯 **Rechercher dans une table avec filtres avancés**  
-🔹 **URLS** : `/api/utilisateur/getUser/`, `/api/societaire/getSocietaire/`, `/api/partSocial/getPartSocial/`, `/api/evenement/getEvenement/`, `/api/evenement/getReserve/`, `/api/chaloupe/getChaloupe/`, `/api/chaloupe/getRejoint/`, `/api/connexion/getConnexion/`, `/api/connexion/getHistorique/`  
+🔹 **URLS** : `/api/utilisateur/getUser/`, `/api/utilisateur/getCollege/`, `/api/societaire/getSocietaire/`, `/api/partSocial/getPartSocial/`, `/api/evenement/getEvenement/`, `/api/evenement/getReserve/`, `/api/chaloupe/getChaloupe/`, `/api/chaloupe/getRejoint/`, `/api/connexion/getConnexion/`, `/api/connexion/getHistorique/`  
 🔹 **Accès** : 🔒 Requiert une connexion  (excepté **`/api/evenement/getEvenement/`**)  
 🔹 **Méthode** : **GET**  
 🔹 **Description** :  Permet de selectionner des entrées d'une table via des filtres et de les récuperer.
@@ -159,6 +159,7 @@ body : {
 
 - [Liste des URLs d'ajout] 👇
 - `api/utilisateur/addUser/`
+- `api/utilisateur/addCollege/`
 - `api/societaire/addSocietaire/`
 - `api/partSocial/addPartSocial/`
 - `api/evenement/addEvenement/`
@@ -177,6 +178,8 @@ body : {
 - `api/utilisateur/updateSelfPassword/`
 - `api/utilisateur/updateUserPassword/`
 - `api/utilisateur/updateUser/`
+- `api/utilisateur/fusionneUsers/`
+- `api/utilisateur/updateCollege/`
 - `api/societaire/updateSocietaire/`
 - `api/partSocial/updatePartSocial/`
 - `api/evenement/updateEvenement/`
@@ -193,6 +196,7 @@ body : {
 
 - [Liste des URLs de supression] 👇
 - `api/utilisateur/deleteUser/`
+- `api/utilisateur/deleteCollege/`
 - `api/societaire/deleteSocietaire/`
 - `api/partSocial/deletePartSocial/`
 - `api/evenement/deleteEvenement/`
