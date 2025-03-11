@@ -3,7 +3,7 @@ from rest_framework.test import APIClient
 from urllib.parse import urlencode
 from api.models import Societaire, Utilisateur, College
 
-class SocietaireTest(APITestCase):
+class SocietaireTest_correctUse(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.college = College.objects.create(nom="Citoyen")

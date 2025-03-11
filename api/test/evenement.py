@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 
 from api.models import Evenement, Utilisateur, Reserve, College
 
-class EvenementTest(APITestCase):
+class EvenementTest_correctUse(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.college = College.objects.create(nom="Citoyen")
