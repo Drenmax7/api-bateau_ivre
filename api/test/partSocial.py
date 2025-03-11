@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 from api.models import PartSocial, Societaire, Utilisateur, College
 from datetime import datetime
 
-class PartSocialTest(APITestCase):
+class PartSocialTest_correctUse(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.college = College.objects.create(nom="Citoyen")
