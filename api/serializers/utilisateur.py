@@ -7,4 +7,4 @@ class UtilisateurSerializer(serializers.ModelSerializer):
         #tout sauf mdp
         fields = ["id_utilisateur","last_login","nom","prenom","civilite","adresse","ville",
                   "pays","code_postal","longitude","latitude","telephone","complement_adresse","premiere_connexion",
-                  "derniere_connexion","mail","is_active","is_staff"]
+                  "derniere_connexion","mail","is_active","is_staff", "college_id"]
