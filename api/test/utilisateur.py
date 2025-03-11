@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 
 from api.models import Utilisateur, College
 
-class UtilisateurTest(APITestCase):
+class UtilisateurTest_correctUse(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.college = College.objects.create(nom="Citoyen")
@@ -118,3 +118,95 @@ class UtilisateurTest(APITestCase):
         # Vérifie que l'utilisateur récupéré est bien celui qui a été cherché
         id_recup = data[0]["id_utilisateur"]
         self.assertEqual(id_recup, id_utilisateur)
+
+
+class CollegeTest_correctUse(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.college = College.objects.create(nom="Citoyen")
+        self.user = Utilisateur.objects.create_user(mail="testuser", password="password", college=self.college)
+        self.user.is_staff = True
+        self.client.force_authenticate(user=self.user)
+                
+        self.data = {"nom": "nom college"}
+
+
+    def test_add(self):
+        url = "/api/utilisateur/addCollege/"
+        response = self.client.post(url, self.data, format="json")
+
+        #requete traité correctement
+        self.assertEqual(response.status_code, 201) 
+
+        nom = response.json()["nom"]
+        query = College.objects.filter(nom=nom)
+        
+        #verifie l'existence de la chaloupe
+        self.assertEqual(len(query), 1)
+
+        entree = query[0]
+        #verifie que les valeurs sont les bonnes
+        self.assertEqual(entree.nom, self.data["nom"])
+
+    def test_delete(self):
+        #cree une chaloupe
+        url = "/api/utilisateur/addCollege/"
+        response = self.client.post(url, self.data, format="json")
+        id_entree = response.json()["nom"]
+
+        url = "/api/utilisateur/deleteCollege/"
+        response = self.client.delete(url, {"college":id_entree}, format="json")
+
+        #requete traité correctement
+        self.assertEqual(response.status_code, 200)
+
+        query = College.objects.filter(nom=id_entree)
+        #verifie la supression de la chaloupe
+        self.assertEqual(len(query), 0)
+
+    def test_update(self):
+        #cree une chaloupe
+        url = "/api/utilisateur/addCollege/"
+        response = self.client.post(url, self.data, format="json")
+        id_entree = response.json()["nom"]
+
+        url = "/api/utilisateur/updateCollege/"
+        newData = {"college":id_entree, "colonne": ["nom"], "valeur" : ["nouveau nom college"]}
+        response = self.client.put(url, newData, format="json")
+
+        #requete traité correctement
+        self.assertEqual(response.status_code, 200)
+        
+        query = College.objects.filter(nom=newData["valeur"][newData["colonne"].index("nom")])
+        entree = query[0]
+        #verifie la modification de la chaloupe
+        for i in range(len(newData["colonne"])):
+            colonne = newData["colonne"][i]
+            valeur = newData["valeur"][i]            
+            self.assertEqual(getattr(entree, colonne) , valeur)
+
+    def test_get(self):
+        #cree une chaloupe
+        url = "/api/utilisateur/addCollege/"
+        response = self.client.post(url, self.data, format="json")
+        id_entree = response.json()["nom"]
+        
+        for i in range(10):
+            self.client.post(url, {"nom":f"test nom college{i}"}, format="json")
+
+
+        param = {"colonne": ["nom"], "filtre" : ["nom college"], "mode":["=="]}
+        query_string = urlencode(param, doseq=True)
+        url = f"/api/utilisateur/getCollege/?{query_string}"
+        response = self.client.get(url, format="json")
+        
+        #requete traité correctement
+        self.assertEqual(response.status_code, 200)
+        
+        #verifie qu'une ligne est récupéré
+        data = response.json()
+        self.assertEqual(len(data), 1)
+
+        #verifie que la ligne récupéré est bien celle qui est cherché
+        id_recup = data[0]["nom"]
+        self.assertEqual(id_recup, id_entree)
