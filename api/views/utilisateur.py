@@ -264,3 +264,86 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
         recipient.save()
         #dissout.delete()
         return Response({"message": "Fusion efectué"}, status=status.HTTP_200_OK)
+    
+
+    """Permet à un utilisateur disposant des permissions necessaire de recuperer les informations concernant des colleges
+    Le body de la requete doit contenir les champs 'colonne', 'filtre' et 'mode'.
+    'colonne' contient les colonnes sur lesquelles les filtres seront appliqué,
+    'filtre' contient les filtres qui seront appliqué sur les colonnes,
+    'mode' contient la façon d'appliquer le filtre. Les modes possibles sont '==', '>', '>=', '<', '<=', '^'
+    """
+    @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
+    def getCollege(self, request):
+        try :
+            utilisateurs = College.objects.filter(**filtreTable(request))
+            serializer = CollegeSerializer(utilisateurs, many=True)
+            return Response(serializer.data)
+
+        except exceptions.FieldError as e:
+            return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
+        except ValueError as e:
+            return Response(str(e),status=status.HTTP_403_FORBIDDEN)
+        
+    """Permet à un utilisateur disposant des permissions necessaire de modifier les informations concernant un college
+    Le body de la requete doit contenir les champs 'college', 'colonne', 'valeur'.
+    'college' correspond au nom du college dont on veut modifier les informations, 
+    'colonne' aux champs à modifier,
+    'valeur' est la valeur qui sera placé dans le champs
+    """
+    @action(detail=False, methods=["put"], permission_classes = [IsAdminUser])
+    def updateCollege(self, request):
+        table_id = request.data.get("college")
+        if not table_id:
+            return Response({"message": "college est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+
+        entry = College.objects.filter(nom=table_id)
+        if len(entry) == 0:
+            return Response({"message": "Aucun college n'a ce nom"}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            entry.update(**updateTable(request))
+            return Response({"message": "Changement effectue"}, status=status.HTTP_200_OK)
+        except exceptions.FieldDoesNotExist as e:
+            return Response({"message":f"{e} Les colonnes possible sont {[field.name for field in College._meta.concrete_fields]}."},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    """Permet à un utilisateur disposant des permissions necessaire de supprimer un college
+    Le body de la requete doit contenir le champs 'college' qui correspond au nom du college que l'on veut supprimer
+    """
+    @action(detail=False, methods=["delete"], permission_classes = [IsAdminUser])
+    def deleteCollege(self, request):
+        table_id = request.data.get("college")
+        if not table_id:
+            return Response({"message": "college est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            entry = College.objects.get(nom=table_id)
+            entry.delete()
+            return Response({"message": "College supprime"}, status=status.HTTP_200_OK)
+        except College.DoesNotExist:
+            return Response({"message": "Aucun college n'a ce nom"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    """Permet à un utilisateur disposant des permissions necessaire d'ajouter un college
+    Le body de la requete doit contenir tous les champs non nulle de la table, avec les valeurs qui doivent etre mise sur ces champs
+    Renvoie le nom du college ainsi crée
+    """
+    @action(detail=False, methods=["post"], permission_classes = [IsAdminUser])
+    def addCollege(self, request):
+        nom = request.data.get("nom")
+        
+        if not all([i != None for i in [nom]]):
+            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : nom"}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            chaloupe = College(
+                nom = nom
+            )
+            chaloupe.save()
+
+            return Response({"message": "Chaloupe cree", "nom": chaloupe.nom}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
