@@ -9,7 +9,7 @@ from django.middleware.csrf import get_token
 from django.db.utils import DataError
 
 from .generalFunctions import filtreTable, updateTable
-from ..models import Utilisateur, Connexion, HistoriqueConnexion, College
+from ..models import Utilisateur, Connexion, HistoriqueConnexion, College, Reserve, Rejoint, Societaire, PartSocial
 from ..serializers import UtilisateurSerializer, CollegeSerializer
 
 import datetime
@@ -227,7 +227,6 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     Le body de la requete doit contenir les champs "recipient", "dissout" qui sont des id d'utilisateur
     Les informations de l'utilisateur dissout vont etre transféré à l'utilisateur recipient de la facon suivante
     Tous les champs vide de recipient sont rempli avec les champs de dissout si rempli
-    Si recipient n'a pas de college, il prend celui de dissout
     Recipient recupere toutes les participations à des evenements de dissout, et si les 2 ont participé au meme evenement, additionne le nombre de place
     Recipient recupere toutes les connexion de dissout, et ignore les connexions en commun
     Recipient recupere toutes les chaloupes rejointe de dissout, et ignore celles en commun, et le booleen dirige est mis à vrai si celui de dissout l'est
@@ -237,7 +236,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
         Toutes les parts sociale que societaire dissout a acheté sont transféré à societaire recipient tel quel
     """
     @action(detail=False, methods=["post"], permission_classes = [IsAdminUser])
-    def fusionneUtilisateur(self, request):
+    def fusionneUsers(self, request):
         recipientID = request.data.get("recipient")
         if not recipientID:
             return Response({"message": "recipient est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
@@ -260,9 +259,51 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
         for field in recipient._meta.fields:
             if getattr(recipient, field.name) in [None, "", []]:  
                 setattr(recipient, field.name, getattr(dissout, field.name))
+    
+        #Recipient recupere toutes les participations à des evenements de dissout
+        for reservation in Reserve.objects.filter(id_utilisateur=dissout):
+            existing = Reserve.objects.filter(id_utilisateur=recipient, id_evenement=reservation.id_evenement).first()
+            if existing:
+                existing.nb_place += reservation.nb_place
+                existing.save()
+            else:
+                reservation.id_utilisateur = recipient
+                reservation.save()
+        
+        #Recipient recupere toutes les connexion de dissout
+        HistoriqueConnexion.objects.filter(id_utilisateur=dissout).exclude(jour__in=HistoriqueConnexion.objects.filter(id_utilisateur=recipient).values("jour")).update(id_utilisateur=recipient)
+        
+        #Recipient recupere toutes les chaloupes rejointe de dissout
+        for rejoint in Rejoint.objects.filter(id_utilisateur=dissout):
+            existing = Rejoint.objects.filter(id_utilisateur=recipient, id_chaloupe=rejoint.id_chaloupe).first()
+            if not existing:
+                rejoint.id_utilisateur = recipient
+                rejoint.save()
+            elif rejoint.dirige:
+                existing.dirige = True
+                existing.save()
+        
+        societaire_dissout = Societaire.objects.filter(id_utilisateur=dissout).first()
+        societaire_recipient = Societaire.objects.filter(id_utilisateur=recipient).first()
+        
+        if societaire_dissout:
+            # Si dissout est societaire mais pas recipient, alors recipient recupere l'aspect societaire
+            if not societaire_recipient:
+                societaire_dissout.id_utilisateur = recipient
+                societaire_dissout.save()
+            else:
+                #Tous les champs vide de societaire recipient sont rempli avec les champs de societaire dissout si rempli
+                for field in societaire_recipient._meta.fields:
+                    if getattr(societaire_recipient, field.name) in [None, "", []]:
+                        setattr(societaire_recipient, field.name, getattr(societaire_dissout, field.name))
+
+                #Toutes les parts sociale que societaire dissout a acheté sont transféré à societaire recipient tel quel
+                PartSocial.objects.filter(id_societaire=societaire_dissout).update(id_societaire=societaire_recipient)
+                societaire_recipient.save()
+                societaire_dissout.delete()
 
         recipient.save()
-        #dissout.delete()
+        dissout.delete()
         return Response({"message": "Fusion efectué"}, status=status.HTTP_200_OK)
     
 
