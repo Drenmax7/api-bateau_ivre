@@ -9,7 +9,9 @@ from urllib.parse import urlencode
 class ChaloupeTest_correctUse(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = Utilisateur.objects.create_user(mail="testuser", password="password")
+
+        self.college = College.objects.create(nom="Citoyen")
+        self.user = Utilisateur.objects.create_user(mail="testuser", password="password", college=self.college)
         self.user.is_staff = True
         self.client.force_authenticate(user=self.user)
 
@@ -101,7 +103,9 @@ class ChaloupeTest_correctUse(APITestCase):
 class RejointTest_correctUse(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = Utilisateur.objects.create_user(mail="testuser", password="password")
+        
+        self.college = College.objects.create(nom="Citoyen")
+        self.user = Utilisateur.objects.create_user(mail="testuser", password="password", college=self.college)
         self.user.is_staff = True
         self.client.force_authenticate(user=self.user)
 
@@ -109,7 +113,8 @@ class RejointTest_correctUse(APITestCase):
             mail="partsocial@test.com",
             nom="Doe",
             prenom="John",
-            telephone="0123456789"
+            telephone="0123456789",
+            college=self.college
         )
 
         self.chaloupe = Chaloupe.objects.create(

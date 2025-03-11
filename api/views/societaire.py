@@ -88,10 +88,9 @@ class SocietaireAPIView(viewsets.GenericViewSet):
         id_utilisateur = request.data.get("id_utilisateur")
         organisation = request.data.get("organisation")
         numero_societaire = request.data.get("numero_societaire")
-        college = request.data.get("college")
         
-        if not all([i != None for i in [id_utilisateur, organisation, numero_societaire, college]]):
-            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_utilisateur, organisation, numero_societaire, college"}, 
+        if not all([i != None for i in [id_utilisateur, organisation, numero_societaire]]):
+            return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : id_utilisateur, organisation, numero_societaire"}, 
                             status=status.HTTP_400_BAD_REQUEST)
 
         if Societaire.objects.filter(id_utilisateur=id_utilisateur).exists():
@@ -101,11 +100,6 @@ class SocietaireAPIView(viewsets.GenericViewSet):
         if len(query) == 0:
             return Response({"message": "Aucun utilisateur n'a cette id"}, status=status.HTTP_400_BAD_REQUEST)
         user = query[0]
-        
-        query = College.objects.filter(nom=college)
-        if len(query) == 0:
-            return Response({"message": f"Aucun college n'a ce nom. Voici la liste des colleges : {CollegeSerializer(College.objects.all()).data}"}, status=status.HTTP_400_BAD_REQUEST)
-        college = query[0]
         
         location = None
         if location == None and user.ville and user.pays and user.adresse:
@@ -125,7 +119,6 @@ class SocietaireAPIView(viewsets.GenericViewSet):
             societaire = Societaire(
                 id_utilisateur=user,
                 organisation=organisation,
-                college = college,
                 numero_societaire = numero_societaire
             )
             societaire.save()

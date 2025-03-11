@@ -9,8 +9,8 @@ from django.middleware.csrf import get_token
 from django.db.utils import DataError
 
 from .generalFunctions import filtreTable, updateTable
-from ..models import Utilisateur, Connexion, HistoriqueConnexion
-from ..serializers import UtilisateurSerializer
+from ..models import Utilisateur, Connexion, HistoriqueConnexion, College
+from ..serializers import UtilisateurSerializer, CollegeSerializer
 
 import datetime
 
@@ -181,15 +181,21 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
         complement_adresse = request.data.get("complement_adresse")
         mail = request.data.get("mail")
         password = request.data.get("password")
+        college = request.data.get("college")
         
-        if not all([i != None for i in [nom, prenom, civilite, adresse, ville, pays, code_postal, telephone, complement_adresse, mail, password]]):
+        if not all([i != None for i in [nom, prenom, civilite, adresse, ville, pays, code_postal, telephone, complement_adresse, mail, password, college]]):
             return Response({"message": "Certains champs ne sont pas remplis. Voici les champs necessaire : nom, prenom, civilite, \
-                             adresse, ville, pays, code_postal, telephone, complement_adresse, mail, password"}, 
+                             adresse, ville, pays, code_postal, telephone, complement_adresse, mail, password, college"}, 
                             status=status.HTTP_400_BAD_REQUEST)
 
         if Utilisateur.objects.filter(mail=mail).exists():
             return Response({"message": "Ce mail est deja pris"}, status=status.HTTP_400_BAD_REQUEST)
         
+        query = College.objects.filter(nom=college)
+        if len(query) == 0:
+            return Response({"message": f"Aucun college n'a ce nom. Voici la liste des colleges : {CollegeSerializer(College.objects.all()).data}"}, status=status.HTTP_400_BAD_REQUEST)
+        college = query[0]
+
         try:
             user = Utilisateur(
                 nom = nom,
@@ -205,6 +211,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
                 derniere_connexion = None,
                 longitude = None,
                 latitude = None,
+                college = college,
 
                 mail = mail,
             )
@@ -216,6 +223,44 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    """Permet de fusionner 2 utilisateurs
+    Le body de la requete doit contenir les champs "recipient", "dissout" qui sont des id d'utilisateur
+    Les informations de l'utilisateur dissout vont etre transféré à l'utilisateur recipient de la facon suivante
+    Tous les champs vide de recipient sont rempli avec les champs de dissout si rempli
+    Si recipient n'a pas de college, il prend celui de dissout
+    Recipient recupere toutes les participations à des evenements de dissout, et si les 2 ont participé au meme evenement, additionne le nombre de place
+    Recipient recupere toutes les connexion de dissout, et ignore les connexions en commun
+    Recipient recupere toutes les chaloupes rejointe de dissout, et ignore celles en commun, et le booleen dirige est mis à vrai si celui de dissout l'est
+    Si dissout est societaire mais pas recipient, alors recipient recupere l'aspect societaire
+    Si recipient et dissout sont societaire alors on fusionne societaire recipient avec societaire dissout de la maniere suivante
+        Tous les champs vide de societaire recipient sont rempli avec les champs de societaire dissout si rempli
+        Toutes les parts sociale que societaire dissout a acheté sont transféré à societaire recipient tel quel
+    """
+    @action(detail=False, methods=["post"], permission_classes = [IsAdminUser])
+    def fusionneUtilisateur(self, request):
+        recipientID = request.data.get("recipient")
+        if not recipientID:
+            return Response({"message": "recipient est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        query = Utilisateur.objects.filter(id_utilisateur=recipientID)
+        if len(query) == 0:
+            return Response({"message": "Aucun utilisateur n'a l'id de recipient"}, status=status.HTTP_400_BAD_REQUEST)
+        recipient = query[0]
+    
+        dissoutID = request.data.get("dissout")
+        if not dissoutID:
+            return Response({"message": "dissout est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        query = Utilisateur.objects.filter(id_utilisateur=dissoutID)
+        if len(query) == 0:
+            return Response({"message": "Aucun utilisateur n'a l'id de dissout"}, status=status.HTTP_400_BAD_REQUEST)
+        dissout = query[0]
+        
+        #Tous les champs vide de recipient sont rempli avec les champs de dissout si rempli
+        for field in recipient._meta.fields:
+            if getattr(recipient, field.name) in [None, "", []]:  
+                setattr(recipient, field.name, getattr(dissout, field.name))
 
-    
-    
+        recipient.save()
+        #dissout.delete()
+        return Response({"message": "Fusion efectué"}, status=status.HTTP_200_OK)

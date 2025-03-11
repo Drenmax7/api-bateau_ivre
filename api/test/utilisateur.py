@@ -3,12 +3,13 @@ from rest_framework.test import APIClient
 
 from urllib.parse import urlencode
 
-from api.models import Utilisateur
+from api.models import Utilisateur, College
 
 class UtilisateurTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = Utilisateur.objects.create_user(mail="admin@test.com", password="password")
+        self.college = College.objects.create(nom="Citoyen")
+        self.user = Utilisateur.objects.create_user(mail="testuser", password="password", college=self.college)
         self.user.is_staff = True
         self.client.force_authenticate(user=self.user)
 
@@ -23,7 +24,8 @@ class UtilisateurTest(APITestCase):
             "telephone": "0123456789", 
             "complement_adresse": "Apt 2B",
             "mail": "johndoe@test.com",
-            "password":"password"
+            "password":"password",
+            "college": "Citoyen"
         }
 
     def test_add_user(self):

@@ -7,7 +7,8 @@ from datetime import datetime
 class PartSocialTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = Utilisateur.objects.create_user(mail="admin@test.com", password="password")
+        self.college = College.objects.create(nom="Citoyen")
+        self.user = Utilisateur.objects.create_user(mail="testuser", password="password", college=self.college)
         self.user.is_staff = True
         self.client.force_authenticate(user=self.user)
 
@@ -15,7 +16,8 @@ class PartSocialTest(APITestCase):
             mail="partsocial@test.com",
             nom="Doe",
             prenom="John",
-            telephone="0123456789"
+            telephone="0123456789",
+            college=self.college
         )
 
         self.college = College.objects.create(nom="College Test")
@@ -23,8 +25,7 @@ class PartSocialTest(APITestCase):
         self.societaire = Societaire.objects.create(
             organisation="Organisation Test",
             numero_societaire="12345",
-            id_utilisateur=self.utilisateur,
-            college=self.college
+            id_utilisateur=self.utilisateur
         )
 
         self.data = {

@@ -6,7 +6,8 @@ from api.models import Societaire, Utilisateur, College
 class SocietaireTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = Utilisateur.objects.create_user(mail="admin@test.com", password="password")
+        self.college = College.objects.create(nom="Citoyen")
+        self.user = Utilisateur.objects.create_user(mail="testuser", password="password", college=self.college)
         self.user.is_staff = True
         self.client.force_authenticate(user=self.user)
         
@@ -14,15 +15,14 @@ class SocietaireTest(APITestCase):
             mail="societaire@test.com",
             nom="Doe",
             prenom="John",
-            telephone="0123456789"
+            telephone="0123456789",
+            college=self.college
         )
-        self.college = College.objects.create(nom="College Test")
 
         self.data = {
             "organisation": "Organisation Test",
             "numero_societaire": "12345",
-            "id_utilisateur": self.utilisateur.id_utilisateur,
-            "college": self.college.nom
+            "id_utilisateur": self.utilisateur.id_utilisateur
         }
 
     def test_add_societaire(self):

@@ -3,12 +3,13 @@ from rest_framework.test import APIClient
 
 from urllib.parse import urlencode
 
-from api.models import Evenement, Utilisateur, Reserve
+from api.models import Evenement, Utilisateur, Reserve, College
 
 class EvenementTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = Utilisateur.objects.create_user(mail="testuser", password="password")
+        self.college = College.objects.create(nom="Citoyen")
+        self.user = Utilisateur.objects.create_user(mail="testuser", password="password", college=self.college)
         self.user.is_staff = True
         self.client.force_authenticate(user=self.user)
 
@@ -112,7 +113,8 @@ class EvenementTest(APITestCase):
 class ReserveTest_correctUse(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = Utilisateur.objects.create_user(mail="testuser", password="password")
+        self.college = College.objects.create(nom="Citoyen")
+        self.user = Utilisateur.objects.create_user(mail="testuser", password="password", college=self.college)
         self.user.is_staff = True
         self.client.force_authenticate(user=self.user)
 
@@ -120,7 +122,8 @@ class ReserveTest_correctUse(APITestCase):
             mail="partsocial@test.com",
             nom="Doe",
             prenom="John",
-            telephone="0123456789"
+            telephone="0123456789",
+            college=self.college
         )
 
         self.evenement = Evenement.objects.create(

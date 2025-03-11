@@ -38,6 +38,7 @@ class Utilisateur(AbstractBaseUser):
     complement_adresse = models.CharField(max_length=100, blank=True, null=True)
     premiere_connexion = models.DateTimeField(blank=True, null=True)
     derniere_connexion = models.DateTimeField(blank=True, null=True)
+    college = models.ForeignKey('College', on_delete=models.CASCADE)
 
     mail = models.EmailField(max_length=100, unique=True)
     is_active = models.BooleanField(default=True)
@@ -46,4 +47,7 @@ class Utilisateur(AbstractBaseUser):
     USERNAME_FIELD = "mail"  
     REQUIRED_FIELDS = []  
 
-    objects = UtilisateurManager()
+    objects = UtilisateurManager()    
+
+class College(models.Model):
+    nom = models.CharField(max_length=50, primary_key=True)

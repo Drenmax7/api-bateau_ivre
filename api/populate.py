@@ -97,6 +97,8 @@ def popUtilisateur():
         "Angers": "49000", "Dijon": "21000", "Brest": "29200", "Le Mans": "72000", "Aix-en-Provence": "13090"
     }
 
+    nomCollege = ["Citoyen", "Personne Morale", "Entreprise","Collectivité Territoriale", "Salarié"]
+
     Utilisateur.objects.all().delete()
     listeMail = []
 
@@ -128,6 +130,8 @@ def popUtilisateur():
             longitude = 2.3512712112122625 + randint(-50000,50000)/10000
             latitude = 48.86363566675727 + randint(-50000,50000)/10000
 
+            college = College.objects.get(nom=choice(nomCollege))
+
             premiere = None
             #chance qu'un utilisateur se soit un jour connecté
             if (randint(0,9) >= 2):
@@ -156,6 +160,7 @@ def popUtilisateur():
                 derniere_connexion = derniere,
                 mail = mail,
                 password=mdp,
+                college = college
             ))
 
         Utilisateur.objects.bulk_create(listeEntree)
@@ -177,6 +182,7 @@ def popUtilisateur():
         is_staff=True,
 
         mail = "canard@gmail.com",
+        college = College.objects.get(nom="Citoyen")
     )
 
     user.set_password("canard")
@@ -195,7 +201,7 @@ def popSocietaire():
         "AilesSolutions", "DuckEmpire", "PlumerieMobile", "TechnoCanard", "DuckWorks",
         "PlumeConnect", "DigitalFeather", "SplashTech", "CanardFusion"
     ]
-    nomCollege = ["Citoyen", "Personne Morale", "Entreprise","Collectivité Territoriale", "Salarié"]
+
 
     listeEntrees = []
 
@@ -203,10 +209,9 @@ def popSocietaire():
     for user in users:
         if (randint(1,20) != 20):
             continue
-        
-        college = College.objects.get(nom=choice(nomCollege))
+            
         choixOrga = "N/a"
-        if college.nom == "Entreprise":
+        if user.college.nom == "Entreprise":
             choixOrga = choice(organisations)
 
         numero_societaire = f"Soc-{str(randint(0, 1000000000)).zfill(10)}-batIvre"
@@ -215,7 +220,6 @@ def popSocietaire():
             organisation = choixOrga,
             id_utilisateur = user,
             numero_societaire = numero_societaire,
-            college = college
         ))
 
 
