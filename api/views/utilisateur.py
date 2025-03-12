@@ -385,6 +385,6 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
             )
             chaloupe.save()
 
-            return Response({"message": "Chaloupe cree", "nom": chaloupe.nom}, status=status.HTTP_201_CREATED)
+            return Response({"message": "College cree", "nom": chaloupe.nom}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
