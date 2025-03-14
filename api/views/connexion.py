@@ -19,21 +19,64 @@ class ConnexionAPIView(viewsets.GenericViewSet):
     Le header de la requete peut contenir le champs 'mode' avec la valeur 'jour' ou 'mois', afin de preciser le format de la réponse
     La valeur 'jour' renverra un dictionnaire donnant le nombre de connexion pour chauqe jour, tandis que la valeur 'mois' renverra un dictionnaire
     comptant le nombre de connexion par mois. Sans ce champs, le dictionnaire renvoyé est celui de la valeur 'mois'.
+    Il est aussi possible de passer dans le header un booleen college avec valeur 0 ou 1 afin que le nombre de connexion de chaque jour ou mois soit detaillé en nombre de connexion par college
     """
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
     def compteConnexion(self, request):
         mode = request.GET.get("mode","mois")
+        college = request.GET.get("college","0") == "1"
         
         if mode != "jour":
             mode = "mois"
         
+        if not college:
+            if mode == "jour":
+                stat = HistoriqueConnexion.objects.values("jour").annotate(nb_utilisateurs=Count("id_utilisateur"))
+                return Response(stat,status=status.HTTP_200_OK)
+        
+            if mode == "mois":
+                stat = HistoriqueConnexion.objects.annotate(mois=TruncMonth("jour")).values("mois").annotate(nb_utilisateurs=Count("id_utilisateur")).order_by("mois")
+                return Response(stat,status=status.HTTP_200_OK)
+        
         if mode == "jour":
-            statJour = HistoriqueConnexion.objects.values("jour").annotate(nb_utilisateurs=Count("id_utilisateur"))
-            return Response(statJour,status=status.HTTP_200_OK)
-    
+            stat = HistoriqueConnexion.objects.values("jour", "id_utilisateur__college").annotate(nb_utilisateurs=Count("id_utilisateur"))
+                    
+            collegeParJour = {}
+            for entry in stat:
+                jour = entry["jour"]
+                college = entry["id_utilisateur__college"]
+                nb = entry["nb_utilisateurs"]
+
+                if str(jour) not in collegeParJour:
+                    collegeParJour[str(jour)] = {}
+                collegeParJour[str(jour)][college] = nb
+            
+            result = []
+            for jour in collegeParJour:
+                result.append({"jour":jour,"nb_utilisateurs":collegeParJour[jour]})
+
+            return Response(result, status=status.HTTP_200_OK)
+        
         if mode == "mois":
-            statMois = HistoriqueConnexion.objects.annotate(mois=TruncMonth("jour")).values("mois").annotate(nb_utilisateurs=Count("id_utilisateur")).order_by("mois")
-            return Response(statMois,status=status.HTTP_200_OK)
+            stat = HistoriqueConnexion.objects.annotate(mois=TruncMonth("jour")).values("mois", "id_utilisateur__college").annotate(nb_utilisateurs=Count("id_utilisateur")).order_by("mois")
+            
+            collegeParMois = {}
+            for entry in stat:
+                mois = entry["mois"]
+                college = entry["id_utilisateur__college"]
+                nb = entry["nb_utilisateurs"]
+
+                if str(mois) not in collegeParMois:
+                    collegeParMois[str(mois)] = {}
+                collegeParMois[str(mois)][college] = nb
+            
+            result = []
+            for mois in collegeParMois:
+                result.append({"mois":mois,"nb_utilisateurs":collegeParMois[mois]})
+
+            return Response(result, status=status.HTTP_200_OK)
+        
+
 
     """Permet à un utilisateur disposant des permissions necessaire de recuperer les jours durant lesquelles des utilisateurs se sont connecté
     Le body de la requete doit contenir les champs 'colonne', 'filtre' et 'mode'.
@@ -98,7 +141,6 @@ class ConnexionAPIView(viewsets.GenericViewSet):
     """Permet à un utilisateur disposant des permissions necessaire d'ajouter une connexion d'un utilisateur à un jour donné
     Le body de la requete doit contenir tous les champs non nulle de la table, avec les valeurs qui doivent etre mise sur ces champs
     L'id de l'utilisateur doit exister
-    Renvoie l'id de l'achat de part social ainsi crée
     """
     @action(detail=False, methods=["post"], permission_classes = [IsAdminUser])
     def addConnexion(self, request):
@@ -132,3 +174,4 @@ class ConnexionAPIView(viewsets.GenericViewSet):
             return Response({"message": "Enregistrement de la connexion effectué"}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
