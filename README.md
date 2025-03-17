@@ -20,6 +20,8 @@ Par défaut, ce projet utilise **MariaDB**, géré par **XAMPP** :
 - **Utilisateur** : `root`
 - **Mot de passe** : Aucun
 
+Il faut ensuite ajouter le **token** que welogin a fourni dans le fichier **token.tok** afin d'assurer la mise à jour de la base de données avec les eventuelles nouvelles informations que reçoit celle de welogin.
+
 ---
 
 ## 🧑‍💻 **Configuration et Initialisation de la Base de Données**
