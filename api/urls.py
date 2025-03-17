@@ -3,6 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import ChaloupeAPIView,ConnexionAPIView,EvenementAPIView,PartSocialAPIView, SocietaireAPIView, UtilisateurAPIView
+from .views.importWeLogin import *
 from .populate import populate
 
 router = DefaultRouter()
@@ -15,6 +16,8 @@ router.register(r"utilisateur", UtilisateurAPIView)
 
 urlpatterns = [
     path("", include(router.urls)),
+    path('import/importWeLogin', importWeLogin, name='import'),
+    path('import/updateWeLogin', updateWeLogin, name='update')
 ]
 
 from django.conf import settings
