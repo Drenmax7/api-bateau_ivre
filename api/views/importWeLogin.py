@@ -15,7 +15,7 @@ from time import time
 LIMITE_UTILISATEUR = 100
 ID_PRODUIT_PART_SOCIAL = 11
 
-with open("token","r") as f:
+with open("token.tok","r") as f:
     TOKEN = f.read()
 
 @api_view(['POST'])
@@ -24,20 +24,40 @@ def importWeLogin(request):
 
     debut = time()
 
+    Utilisateur.objects.all().delete()
+  
+    #limité a un maximum de 100 par l'api
     limite = 100
-    offset = 0
-    url = f"https://weapi1.welogin.fr/commandes?id_produit={ID_PRODUIT_PART_SOCIAL}&limit={limite}&offset={offset}"  
     headers = {
         "Authorization": f"Bearer {TOKEN}"
     }
-    response = requests.get(url, headers=headers)
 
-    if response.status_code == 200:
-        data = response.json()
-    else:
-        return Response({"message": "Échec de l'import des utilisateurs","status":response.status_code,"url":url,"reponse":response})
+    part = []
 
-    print(data)
+    offset = 0  
+    endReached = False
+    while offset < LIMITE_UTILISATEUR:
+        url = f"https://weapi1.welogin.fr/commandes?id_produit={ID_PRODUIT_PART_SOCIAL}&limit={limite}&offset={offset}"  
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            data = response.json()["data"]
+            part += data
+
+            if len(part) != limite and endReached:
+                return Response({"message": "Probleme au niveau de la limite, l'api n'a pas renvoyé autant d'entrée que prévu","limite":limite,"url":url,"taille reponse":len(data)})
+            elif len(part) != limite:
+                endReached = True
+                
+        elif response.status_code == 422:
+            #le offset est plus grand que le nombre d'entrée de l'api, on a recupéré toutes les entrées
+            break
+        else:
+            return Response({"message": "Échec de l'import des utilisateurs","status":response.status_code,"url":url,"reponse":response})
+        
+        offset += limite
+
+    print(part)
 
 
     return Response({"message": "Importation reussie en {}s".format(round(time()-debut,3))})
