@@ -16,7 +16,6 @@ router.register(r"utilisateur", UtilisateurAPIView)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path('import/importWeLogin', importWeLogin, name='import'),
     path('import/updateWeLogin', updateWeLogin, name='update')
 ]
 
@@ -26,6 +25,7 @@ if settings.DEBUG:
     print("========================================================\n"+
           "POPULATE EST ACCESSIBLE : METTRE DJANGO EN DEBUG = FALSE \n"+
           "========================================================")
-    urlpatterns.append(
-        path("populate/", populate),
-    )
+    urlpatterns += [
+        path("populate", populate),
+        path('import/importWeLogin', importWeLogin, name='import'),
+    ]
