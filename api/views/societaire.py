@@ -10,9 +10,7 @@ from .generalFunctions import filtreTable, updateTable
 from ..models import Societaire, Utilisateur, College
 from ..serializers import SocietaireSerializer, CollegeSerializer
 
-from geopy.geocoders import Nominatim
-
-geolocator = Nominatim(user_agent="geo_duck")
+from .generalFunctions import trouveCoordonnee
 
 class SocietaireAPIView(viewsets.GenericViewSet):
     queryset = Societaire.objects.all()
@@ -101,19 +99,7 @@ class SocietaireAPIView(viewsets.GenericViewSet):
             return Response({"message": "Aucun utilisateur n'a cette id"}, status=status.HTTP_400_BAD_REQUEST)
         user = query[0]
         
-        location = None
-        if location == None and user.ville and user.pays and user.adresse:
-            location = geolocator.geocode(f"{user.adresse}, {user.ville}, {user.pays}")
-        if location == None and user.ville and user.pays:
-            location = geolocator.geocode(f"{user.ville}, {user.pays}")
-        if location == None and user.code_postal:
-            location = geolocator.geocode(f"{user.code_postal}")
-        
-        if location != None:
-            user.latitude = location.latitude
-            user.longitude = location.longitude
-            user.save()
-        
+        trouveCoordonnee(user)        
 
         try:
             societaire = Societaire(
