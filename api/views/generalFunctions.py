@@ -68,7 +68,7 @@ geolocator = Nominatim(user_agent="geo_duck")
 with open("cacheGeolocator.txt","r", encoding="utf-8") as f:
     cache = eval(f.read())
 
-def trouveCoordonnee(user):
+def trouveCoordonnee(user, skipLocalisation=False):
     erreur = ""
 
     location = None
@@ -81,15 +81,18 @@ def trouveCoordonnee(user):
             return erreur
         else:
             try:
-                location = geolocator.geocode(f"{user.adresse}, {user.ville}, {user.pays}")
-                time.sleep(2)
+                if skipLocalisation:
+                    location = None
+                else:
+                    location = geolocator.geocode(f"{user.adresse}, {user.ville}, {user.pays}")
+                    time.sleep(2)
 
                 if location != None:
                     cache["adresse"][f"{user.adresse.lower()}-{user.ville.lower()}-{user.pays.lower()}"] = (location.latitude,location.longitude)
                     with open("cacheGeolocator.txt","w", encoding="utf-8") as f:
                         f.write(str(cache))
 
-                else:
+                elif not(skipLocalisation):
                     erreur += f"adresse non trouvé : {user.adresse}, {user.ville}, {user.pays}\n"
             except:
                 erreur += f"recherche api echoué : {user.adresse}, {user.ville}, {user.pays}\n"
@@ -103,15 +106,18 @@ def trouveCoordonnee(user):
             return erreur
         else:
             try:
-                location = geolocator.geocode(f"{user.ville}, {user.pays}")
-                time.sleep(2)
+                if skipLocalisation:
+                    location = None
+                else:
+                    location = geolocator.geocode(f"{user.ville}, {user.pays}")
+                    time.sleep(2)
                 
                 if location != None:
                     cache["ville"][f"{user.ville.lower()}-{user.pays.lower()}"] = (location.latitude,location.longitude)
                     with open("cacheGeolocator.txt","w", encoding="utf-8") as f:
                         f.write(str(cache))
                 
-                else:
+                elif not(skipLocalisation):
                     erreur += f"ville non trouvé : {user.ville}, {user.pays}\n"
             except:
                 erreur += f"recherche api echoué : {user.ville}, {user.pays}\n"
@@ -125,15 +131,18 @@ def trouveCoordonnee(user):
             return erreur
         else:
             try:
-                location = geolocator.geocode(f"{user.code_postal}, {user.pays}")
-                time.sleep(2)
+                if skipLocalisation:
+                    location = None
+                else:
+                    location = geolocator.geocode(f"{user.code_postal}, {user.pays}")
+                    time.sleep(2)
 
                 if location != None:
                     cache["postal"][f"{user.code_postal}-{user.pays.lower()}"] = (location.latitude,location.longitude)
                     with open("cacheGeolocator.txt","w", encoding="utf-8") as f:
                         f.write(str(cache))
                 
-                else:
+                elif not(skipLocalisation):
                     erreur += f"code postal non trouvé : {user.code_postal}, {user.pays}\n"
             
             except:
