@@ -1,6 +1,7 @@
 from rest_framework.decorators import action, permission_classes
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from api.models import *
 
@@ -10,6 +11,7 @@ from random import normalvariate, randint, choice, getrandbits, expovariate, shu
 import datetime
 from time import time
 
+@api_view(['POST'])
 def populate(request):
     debut = time()
     
