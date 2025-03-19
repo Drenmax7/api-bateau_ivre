@@ -56,9 +56,21 @@ python -m manage runserver
 
 ## 🧑‍🔬 **Remplir la Base de Données avec des Données de Test**
 
-Une fois le serveur démarré, vous pouvez remplir la base de données avec des données de test via l'URL **`/api/populate/`**. Cela peut prendre quelques dizaines de secondes.
+Une fois le serveur démarré, vous pouvez remplir la base de données avec des données de test via l'URL **`/api/populate`** en mode **POST**. Cela peut prendre quelques dizaines de secondes.
+Pour pouvoir accéder à l'URL il faut obligatoirement que l'application soit en mode **debug**. Ce parametre est accessible dans le fichier **`bateau_ivre/settings.py`**, il faut trouver la variable nommé `DEBUG` et mettre sa valeur à `True`. Une fois la base de données rempli pensez bien à enlever le mode debug en remettant la valeur de la variable à `False`.
 
 👉 Si la création des données est trop lente, vous pouvez réduire leur quantité en modifiant le fichier **`api/populate.py`** et en ajustant le nombre d'itérations dans certaines boucles `for`.
+
+---
+
+## 🧑‍🔬 **Importer les données de WeLogin**
+
+Une fois le serveur démarré, vous pouvez importer les données de WeLogin via l'URL **`/api/import/importWeLogin/`** en mode **POST**.
+De la meme facon que precedemment, cette requete necessite que l'application soit en mode **debug**
+La requete prend un long moment à etre executé notemment du à la recherche de la localisation des societaires. Cette recherche s'effectue via un service externe gratuit mais lent. Des delais sont present dans le code entre chaque requete et sont **necessaire** afin que le service ne renvoie pas d'erreur.
+Les localisations trouvé sont placé dans un fichier cahce `cacheGeolocator.txt` afin de limiter au maximum les appels au service externe.
+Les appels à l'api peuvent etre desactivé en utilisant cette URL **`/api/import/importWeLogin/?skipLocalisation=1`**.
+Le fichier `geolocatorLog.txt` contient les adresses que le service externe n'a pas réussie à trouver. Cela peut etre du à des fautes de frappe, une ponctuation eronné etc. 
 
 ---
 
