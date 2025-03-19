@@ -211,14 +211,14 @@ def addUsers(user, part):
             compteAchat += 1
             j.save()
 
-def trouveCoordonneeUsers():
+def trouveCoordonneeUsers(skipLocalisation):
     users = Utilisateur.objects.all()
     compte = 0
     for user in users:
         compte += 1
         print(f"{compte}/{len(users)} localisation cherché")
 
-        erreur = trouveCoordonnee(user)
+        erreur = trouveCoordonnee(user, skipLocalisation)
         if erreur != "":
             with open("geolocatorLog.txt","a") as f:
                 f.write(f"{erreur}")
@@ -228,6 +228,8 @@ def trouveCoordonneeUsers():
         
 @api_view(['POST'])
 def importWeLogin(request):
+    skipLocalisation = request.GET.get("skipLocalisation") == "1"
+
     #return Response({"message": "Cette requete est desactivé pour eviter la supression de la BDD. Si vous souhaitez vraiment l'utiliser vous devez modifier le fichier importWeLogin.py et mettre la ligne envoyant ce message en commentaire"})
 
     debut = time()
@@ -245,7 +247,7 @@ def importWeLogin(request):
     addCollege(user)
     addUsers(user, part)
     
-    trouveCoordonneeUsers()
+    trouveCoordonneeUsers(skipLocalisation)
     
     addBaseUser()
 
