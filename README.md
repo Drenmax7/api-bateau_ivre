@@ -251,7 +251,7 @@ Puis dans le body :
 #### ⚠️**Les exceptions**
 
 🔹 `api/utilisateur/updateUserPassword/` : dans le body, on met seulement `id_utilisateur` et le nouveau mot de passe dans `password`  
-🔹 `api/utilisateur/fusionneUsers/` : dans le body, on met seulement `dissout`, l'utilisateur qu'on veut supprimer, et `recipient` l'utilisateur qui récupère les données  
+🔹 `api/utilisateur/fusionneUsers/` : dans le body, on met seulement `dissout`, l'ID de l'utilisateur qu'on veut supprimer, et `recipient` l'ID de l'utilisateur qui récupère les données  
 🔹 `api/evenement/updateReservation/` : en guise d'ID, on utilise `id_evenement` **ET** `id_utilisateur`, de même pour `api/chaloupe/updateRejoint/` qui utilise `id_chaloupe` **ET** `id_utilisateur`  
 
 ✅ **Exemples d'utilisation** :
