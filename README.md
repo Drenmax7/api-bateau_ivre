@@ -208,7 +208,7 @@ Les paramètres requis varient selon l'URL car les informations à renseigner ne
 | `api/chaloupe/addRejoint/` | `id_utilisateur`, `id_chaloupe`, `dirige` |
 
 ✅ **Exemple d'utilisation** :  
-Si tu veux ajouter une chaloupe dont le nom est `CoinCoinTech` et la description est `Start-up innovante développant des gadgets pour améliorer la vie des canards connectés.`, on utilise l'URL suivant :  
+Si tu veux ajouter une chaloupe dont le nom est **CoinCoinTech** et la description est **Start-up innovante développant des gadgets pour améliorer la vie des canards connectés.**, il faut utiliser l'URL suivant :  
 ```json
 /api/chaloupe/addChaloupe/
 ```
@@ -223,25 +223,78 @@ Puis dans le body :
 ```
 </details>
 
+---
+
 </details>
 
 <details>
 <summary><strong>🔄 Mettre à jour des données :</strong></summary>
 
-- [Liste des URLs de maj] 👇
-- `api/utilisateur/updateSelfPassword/`
-- `api/utilisateur/updateUserPassword/`
-- `api/utilisateur/updateUser/`
-- `api/utilisateur/fusionneUsers/`
-- `api/utilisateur/updateCollege/`
-- `api/societaire/updateSocietaire/`
-- `api/partSocial/updatePartSocial/`
-- `api/evenement/updateEvenement/`
-- `api/evenement/updateReservation/`
-- `api/chaloupe/updateChaloupe/`
-- `api/chaloupe/updateRejoint/`
+#### 📕**Modifier les informations d'une donnée dans une table**
+🔹 **URLS** : `api/utilisateur/updateUserPassword/`, `api/utilisateur/updateUser/`, `api/utilisateur/fusionneUsers/`, `api/utilisateur/updateCollege/`, `api/societaire/updateSocietaire/`, `api/partSocial/updatePartSocial/`, `api/evenement/updateEvenement/`, `api/evenement/updateReservation/`, `api/chaloupe/updateChaloupe/`, `api/chaloupe/updateRejoint/`
+🔹 **Accès** : 🔒 Requiert d'être administrateur
+🔹 **Méthode** : **PUT**  
+🔹 **Description** :  Permet de modifier des données dans une table, nécessite de connaître l'**ID** de la donnée qu'on veut modifier
 
+<details>
 
+<summary><b>🔹Paramètres requis dans le body :</b></summary>
+
+#### 👍**Le cas "normal"**
+
+| Champ   | Type    | Description |
+|---------|--------|-------------|
+| `id` | `int` | l'ID de l'élément à modifier dans la table, le nom dépend évidemment de l'URL, exemple : id_utilisateur |
+| `colonne`  | `list[str]` | Liste des colonnes à modifier |
+| `valeur`    | `list[str]` | Liste des nouvelles valeurs des colonnes (les indices de colonne et valeur doivent correspondre) |
+
+#### ⚠️**Les exceptions**
+
+🔹 `api/utilisateur/updateUserPassword/` : dans le body, on met seulement `id_utilisateur` et le nouveau mot de passe dans `password`
+🔹 `api/utilisateur/fusionneUsers/` : dans le body, on met seulement `dissout`, l'utilisateur qu'on veut supprimer, et `recipient` l'utilisateur qui récupère les données
+🔹 `api/evenement/updateReservation/` : en guise d'ID, on utilise `id_evenement` **ET** `id_utilisateur`, de même pour `api/chaloupe/updateRejoint/` qui utilise `id_chaloupe` **ET** `id_utilisateur`
+
+✅ **Exemples d'utilisation** :
+
+Si tu veux que l'utilisateur d'ID **9** ait maintenant pour `nom` **Picsou** et que sa `ville` soit **DonaldVille**, il faut utiliser l'URL suivant :
+```json
+api/utilisateur/updateUser/
+```
+
+Puis dans le body :
+```json
+{
+    "id_utilisateur": 9,
+    "colonne": ["nom", "ville"],
+    "valeur": ["Picsou", "DonaldVille"]
+}
+```
+
+❌ Erreur à ne pas faire :
+```json
+{
+    "id_utilisateur": 9,
+    "colonne": ["nom", "ville"],
+    "valeur": ["DonaldVille", "Picsou"]
+}
+```
+
+**Autre exemple :** Si tu veux que ce même utilisateur (ID **9**), qui est actuellement membre de la chaloupe d'ID **3**, `dirige` maintenant cette chaloupe, il faut utiliser l'URL suivant :
+```json
+api/chaloupe/updateRejoint/
+```
+
+Puis dans le body :
+```json
+{
+    "id_chaloupe": 3,
+    "id_utilisateur": 9,
+    "colonne": ["dirige"],
+    "valeur": ["true"]
+}
+```
+
+</details>
 
 </details>
 
