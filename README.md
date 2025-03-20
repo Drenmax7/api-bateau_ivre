@@ -65,7 +65,7 @@ Pour pouvoir accéder à l'URL il faut obligatoirement que l'application soit en
 
 ## 🧑‍🔬 **Importer les données de WeLogin**
 
-Une fois le serveur démarré, vous pouvez importer les données de WeLogin via l'URL **`/api/import/importWeLogin/`** en mode **POST**.
+Une fois le serveur démarré, vous pouvez importer les données de WeLogin via l'URL **`/api/import/importWeLogin`** en mode **POST**.
 De la meme facon que precedemment, cette requete necessite que l'application soit en mode **debug**
 La requete prend un long moment à etre executé notemment du à la recherche de la localisation des societaires. Cette recherche s'effectue via un service externe gratuit mais lent. Des delais sont present dans le code entre chaque requete et sont **necessaire** afin que le service ne renvoie pas d'erreur.
 Les localisations trouvé sont placé dans un fichier cahce `cacheGeolocator.txt` afin de limiter au maximum les appels au service externe.
