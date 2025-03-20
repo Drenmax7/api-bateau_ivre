@@ -130,7 +130,7 @@ Assurez-vous de toujours envoyer ces tokens afin de garantir que vos requêtes s
 🔹 **Méthode** : **GET**  
 🔹 **Description** :  Permet de selectionner des entrées d'une table via des filtres et de les récuperer.
 <details>
-<summary><b>🔹Paramètres requis dans le body :</b></summary>
+<summary><b>🔹Paramètres requis dans le header :</b></summary>
 
 | Champ   | Type    | Description |
 |---------|--------|-------------|
@@ -151,20 +151,32 @@ Assurez-vous de toujours envoyer ces tokens afin de garantir que vos requêtes s
 ✅ **Exemple d'utilisation** :  
 Si tu veux récupérer tous les utilisateurs **nommés "Duck"** qui habitent **à Paris**, en **mode strictement égal** :  
 ```json
-URL : "/api/utilisateur/getUser/"
+/api/utilisateur/getUser/?colonne=nom&colonne=ville&filtre=Duck&filtre=Paris&mode===&mode===
 
-body : {
-  "colonne": ["nom", "ville"],
-  "filtre": ["Duck", "Paris"],
-  "mode": ["==", "=="]
-}
 ```
 
 </details>
 
 ---
 
-- `api/connexion/compteConnexion`
+#### 📊 **Compter le nombre de connexion effectué par des utilisateurs**  
+🔹 **URL** : `api/connexion/compteConnexion/`
+🔹 **Accès** : 🔒 Requiert une connexion
+🔹 **Méthode** : **GET**  
+🔹 **Description** :  Permet de recuperer le nombre de connexion unique enregistré dans la BDD
+
+<details>
+<summary><b>🔹Paramètres optionnel dans le header :</b></summary>
+
+| Champ   | Type    | Description |
+|---------|--------|-------------|
+| `mode` | `str : "jour" ou "mois"` | Indique si les connexions doivent regroupé par jour ou par mois |
+| `college`  | `bool : 0 ou 1` | Indique si le nombre de connexion doit distingué les diffents colleges ou tous les regrouper |
+
+</details>
+
+
+---
 
 </details>
 
