@@ -5,7 +5,8 @@ from rest_framework import status
 from geopy.geocoders import Nominatim
 import time
 
-
+"""Cette fonction est appelé par les views recuperant des données dans les tables
+"""
 def filtreTable(request):
     colonne = request.GET.getlist('colonne',[])
     filtre = request.GET.getlist('filtre',[])
@@ -45,6 +46,8 @@ def filtreTable(request):
     
     return filtre_dict
 
+"""Cette fonction est appelé par les view mettant a jour les tables
+"""
 def updateTable(request):
     colonne = request.data.get('colonne',[])
     valeur = request.data.get('valeur',[])
@@ -68,6 +71,19 @@ geolocator = Nominatim(user_agent="geo_duck")
 with open("cacheGeolocator.txt","r", encoding="utf-8") as f:
     cache = eval(f.read())
 
+"""Apelle un service externe afin de trouver les coordonnées gps de l'utilisateur
+Attribue automatiquement les coordonnées à l'utilisateur
+Les coordonnées peuvent etre calculé de plusieurs facons differentes
+La fonction essaie d'abord de les trouver grace à l'adresse, la ville et le pays de l'utilisateur
+Si le service ne trouve pas ou qu'une de ces infos n'est pas renseigné alors on essaie avec seulement la ville et le pays
+Si le service ne trouve pas ou qu'une de ces infos n'est pas renseigné alors on essaie avec le code postal et le pays
+Si le service ne trouve toujours pas ou qu'une de ces infos n'est pas renseigné alors la fonction abandonne et aucune coordonnées n'est attribué
+Le service auquel fait appel la fonction est gratuite mais tres limité
+Pour eviter d'y faire trop d'appel toutes les coordonnées sont mis en cache dans un fichier cacheGeolocator.txt
+Si la fonction trouve une correspondance dans le cache alors elle prendra les coordonnées associé sans rien essayer d'autre, meme si les coordonnées sont erroné
+Ce fichier peut potentiellement devenir volumineux mais sa supression entrainera de nouveaux des appels à l'api, qui prennent 2s par appel
+Cette fonction comprend des time.sleep(2) et sont necessaire afin que le service externe ne rejette pas les requetes qui serait envoyé trop rapidement
+"""
 def trouveCoordonnee(user, skipLocalisation=False):
     erreur = ""
 
