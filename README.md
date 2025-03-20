@@ -184,17 +184,44 @@ Si tu veux récupérer tous les utilisateurs **nommés "Duck"** qui habitent **�
 <details>
 <summary><strong>➕ Ajouter des données :</strong></summary>
 
-- [Liste des URLs d'ajout] 👇
-- `api/utilisateur/addUser/`
-- `api/utilisateur/addCollege/`
-- `api/societaire/addSocietaire/`
-- `api/partSocial/addPartSocial/`
-- `api/evenement/addEvenement/`
-- `api/evenement/addReservation/`
-- `api/connexion/addConnexion/`
-- `api/chaloupe/addChaloupe/`
-- `api/chaloupe/addRejoint/`
-- `api/chaloupe/addSelfRejoint/`
+#### 📕**Ajouter des données dans une table**
+🔹 **URLS** : `api/utilisateur/addUser/`, `api/utilisateur/addCollege/`, `api/societaire/addSocietaire/`, `api/partSocial/addPartSocial/`, `api/evenement/addEvenement/`, `api/evenement/addReservation/`, `api/connexion/addConnexion/`, `api/chaloupe/addChaloupe/`, `api/chaloupe/addRejoint/`
+🔹 **Accès** : 🔒 Requiert d'être administrateur, (excepté **`/api/utilisateur/addUser/`**)
+🔹 **Méthode** : **POST**  
+🔹 **Description** :  Permet d'ajouter des entrées dans une table, nécessite de mettre les informations de la donnée qu'on veut ajouter dans le body
+
+<details>
+<summary><b>🔹Paramètres requis dans le body :</b></summary>
+
+Les paramètres requis varient selon l'URL car les informations à renseigner ne sont pas les mêmes selon la table :
+
+| URL   | Paramètres |
+|---------|------------|
+| `api/utilisateur/addUser/` | `nom`, `prenom`, `civilite`, `adresse`, `ville`, `pays`, `code_postal`, `telephone`, `complement_adresse`, `mail`, `password`, `college`, `is_staff` |
+| `api/utilisateur/addCollege/` | `nom` |
+| `api/societaire/addSocietaire/` | `id_utilisateur`, `organisation`, `numero_societaire` |
+| `api/partSocial/addPartSocial/` | `date_achat`, `quantite`, `num_facture`, `id_societaire` |
+| `api/evenement/addEvenement/` | `place_disponible`, `date_evenement`, `titre`, `description` |
+| `api/evenement/addReservation/` | `id_utilisateur`, `id_evenement`, `nb_place` |
+| `api/connexion/addConnexion/` | `id_utilisateur`, `id_evenement`, `nb_place` |
+| `api/chaloupe/addChaloupe/` | `nom`, `description` |
+| `api/chaloupe/addRejoint/` | `id_utilisateur`, `id_chaloupe`, `dirige` |
+
+✅ **Exemple d'utilisation** :  
+Si tu veux ajouter une chaloupe dont le nom est `CoinCoinTech` et la description est `Start-up innovante développant des gadgets pour améliorer la vie des canards connectés.`, on utilise l'URL suivant :  
+```json
+/api/chaloupe/addChaloupe/
+```
+
+Puis dans le body :
+
+```json
+{
+    "nom": "CoinCoinTech",
+    "description": "Start-up innovante développant des gadgets pour améliorer la vie des canards connectés."
+}
+```
+</details>
 
 </details>
 
