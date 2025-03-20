@@ -137,6 +137,7 @@ Assurez-vous de toujours envoyer ces tokens afin de garantir que vos requêtes s
 | `colonne` | `list[str]` | Liste des colonnes sur lesquelles appliquer les filtres |
 | `filtre`  | `list[str]` | Liste des valeurs utilisées pour filtrer les résultats |
 | `mode`    | `list[str]` | Méthode de filtrage appliquée |
+| `geojson` (optionnel) | `bool` : 0 ou 1| Uniquement pour getUser, specifie si les utilisateurs renvoyé sont au format geojson ou non|
 
 🔹 **Modes de filtrage disponibles** :  
 | Mode | Signification |
