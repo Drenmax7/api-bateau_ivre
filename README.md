@@ -296,23 +296,66 @@ Puis dans le body :
 
 </details>
 
+---
+
 </details>
 
 <details>
 <summary><strong>❌ Supprimer des données :</strong></summary>
 
-- [Liste des URLs de supression] 👇
-- `api/utilisateur/deleteUser/`
-- `api/utilisateur/deleteCollege/`
-- `api/societaire/deleteSocietaire/`
-- `api/partSocial/deletePartSocial/`
-- `api/evenement/deleteEvenement/`
-- `api/evenement/deleteReservation/`
-- `api/connexion/deleteConnexion/`
-- `api/chaloupe/deleteChaloupe/`
-- `api/chaloupe/deleteRejoint/`
-- `api/chaloupe/deleteSelfRejoint/`
+#### 📕**Supprimer une donnée dans une table**
+🔹 **URLS** : `api/utilisateur/deleteUser/`, `api/utilisateur/deleteCollege/`, `api/societaire/deleteSocietaire/`, `api/partSocial/deletePartSocial/`, `api/evenement/deleteEvenement/`, `api/evenement/deleteReservation/`, `api/connexion/deleteConnexion/`, `api/chaloupe/deleteChaloupe/`, `api/chaloupe/deleteRejoint/`
+🔹 **Accès** : 🔒 Requiert d'être administrateur
+🔹 **Méthode** : **DELETE**  
+🔹 **Description** :  Permet de supprimer une donnée dans une table, nécessite de connaître l'**ID** de la donnée qu'on veut supprimer
 
+<details>
+
+<summary><b>🔹Paramètres requis dans le body :</b></summary>
+
+#### 👍**Le cas "normal"**
+
+| Champ   | Type    | Description |
+|---------|--------|-------------|
+| `id` | `int` | l'ID de l'élément à supprimer dans la table, le nom dépend évidemment de l'URL, exemple : id_utilisateur |
+
+... et c'est tout !
+
+#### ⚠️**Les exceptions**
+
+🔹 `api/evenement/deleteReservation/` : en guise d'ID, on utilise `id_evenement` **ET** `id_utilisateur`, de même pour `api/chaloupe/deleteRejoint/` qui utilise `id_chaloupe` **ET** `id_utilisateur`
+🔹 `api/connexion/deleteConnexion/` : en plus de l'ID (qui correspond à `id_utilisateur`), on a un paramètre `jour` obligatoire qui correspond au jour de la connexion
+
+✅ **Exemples d'utilisation** :
+
+Si tu veux que l'utilisateur d'ID **9** soit supprimé de la base de données, il faut utiliser l'URL suivant :
+```json
+api/utilisateur/deleteUser/
+```
+
+Puis dans le body :
+```json
+{
+    "id_utilisateur": 9
+}
+```
+
+**Autre exemple :** Si tu veux que l'utilisateur d'ID **6** n'appartienne plus à la chaloupe d'ID **3**, il faut utiliser l'URL suivant :
+```json
+api/chaloupe/deleteRejoint/
+```
+
+Puis dans le body :
+```json
+{
+    "id_chaloupe": 3,
+    "id_utilisateur": 6
+}
+```
+
+</details>
+
+---
 
 </details>
 
