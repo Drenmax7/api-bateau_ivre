@@ -185,8 +185,8 @@ Si tu veux récupérer tous les utilisateurs **nommés "Duck"** qui habitent **�
 <summary><strong>➕ Ajouter des données :</strong></summary>
 
 #### 📕**Ajouter des données dans une table**
-🔹 **URLS** : `api/utilisateur/addUser/`, `api/utilisateur/addCollege/`, `api/societaire/addSocietaire/`, `api/partSocial/addPartSocial/`, `api/evenement/addEvenement/`, `api/evenement/addReservation/`, `api/connexion/addConnexion/`, `api/chaloupe/addChaloupe/`, `api/chaloupe/addRejoint/`
-🔹 **Accès** : 🔒 Requiert d'être administrateur, (excepté **`/api/utilisateur/addUser/`**)
+🔹 **URLS** : `api/utilisateur/addUser/`, `api/utilisateur/addCollege/`, `api/societaire/addSocietaire/`, `api/partSocial/addPartSocial/`, `api/evenement/addEvenement/`, `api/evenement/addReservation/`, `api/connexion/addConnexion/`, `api/chaloupe/addChaloupe/`, `api/chaloupe/addRejoint/`  
+🔹 **Accès** : 🔒 Requiert d'être administrateur, (excepté **`/api/utilisateur/addUser/`**)  
 🔹 **Méthode** : **POST**  
 🔹 **Description** :  Permet d'ajouter des entrées dans une table, nécessite de mettre les informations de la donnée qu'on veut ajouter dans le body
 
@@ -231,8 +231,8 @@ Puis dans le body :
 <summary><strong>🔄 Mettre à jour des données :</strong></summary>
 
 #### 📕**Modifier les informations d'une donnée dans une table**
-🔹 **URLS** : `api/utilisateur/updateUserPassword/`, `api/utilisateur/updateUser/`, `api/utilisateur/fusionneUsers/`, `api/utilisateur/updateCollege/`, `api/societaire/updateSocietaire/`, `api/partSocial/updatePartSocial/`, `api/evenement/updateEvenement/`, `api/evenement/updateReservation/`, `api/chaloupe/updateChaloupe/`, `api/chaloupe/updateRejoint/`
-🔹 **Accès** : 🔒 Requiert d'être administrateur
+🔹 **URLS** : `api/utilisateur/updateUserPassword/`, `api/utilisateur/updateUser/`, `api/utilisateur/fusionneUsers/`, `api/utilisateur/updateCollege/`, `api/societaire/updateSocietaire/`, `api/partSocial/updatePartSocial/`, `api/evenement/updateEvenement/`, `api/evenement/updateReservation/`, `api/chaloupe/updateChaloupe/`, `api/chaloupe/updateRejoint/`  
+🔹 **Accès** : 🔒 Requiert d'être administrateur  
 🔹 **Méthode** : **PUT**  
 🔹 **Description** :  Permet de modifier des données dans une table, nécessite de connaître l'**ID** de la donnée qu'on veut modifier
 
@@ -250,9 +250,9 @@ Puis dans le body :
 
 #### ⚠️**Les exceptions**
 
-🔹 `api/utilisateur/updateUserPassword/` : dans le body, on met seulement `id_utilisateur` et le nouveau mot de passe dans `password`
-🔹 `api/utilisateur/fusionneUsers/` : dans le body, on met seulement `dissout`, l'utilisateur qu'on veut supprimer, et `recipient` l'utilisateur qui récupère les données
-🔹 `api/evenement/updateReservation/` : en guise d'ID, on utilise `id_evenement` **ET** `id_utilisateur`, de même pour `api/chaloupe/updateRejoint/` qui utilise `id_chaloupe` **ET** `id_utilisateur`
+🔹 `api/utilisateur/updateUserPassword/` : dans le body, on met seulement `id_utilisateur` et le nouveau mot de passe dans `password`  
+🔹 `api/utilisateur/fusionneUsers/` : dans le body, on met seulement `dissout`, l'utilisateur qu'on veut supprimer, et `recipient` l'utilisateur qui récupère les données  
+🔹 `api/evenement/updateReservation/` : en guise d'ID, on utilise `id_evenement` **ET** `id_utilisateur`, de même pour `api/chaloupe/updateRejoint/` qui utilise `id_chaloupe` **ET** `id_utilisateur`  
 
 ✅ **Exemples d'utilisation** :
 
@@ -304,8 +304,8 @@ Puis dans le body :
 <summary><strong>❌ Supprimer des données :</strong></summary>
 
 #### 📕**Supprimer une donnée dans une table**
-🔹 **URLS** : `api/utilisateur/deleteUser/`, `api/utilisateur/deleteCollege/`, `api/societaire/deleteSocietaire/`, `api/partSocial/deletePartSocial/`, `api/evenement/deleteEvenement/`, `api/evenement/deleteReservation/`, `api/connexion/deleteConnexion/`, `api/chaloupe/deleteChaloupe/`, `api/chaloupe/deleteRejoint/`
-🔹 **Accès** : 🔒 Requiert d'être administrateur
+🔹 **URLS** : `api/utilisateur/deleteUser/`, `api/utilisateur/deleteCollege/`, `api/societaire/deleteSocietaire/`, `api/partSocial/deletePartSocial/`, `api/evenement/deleteEvenement/`, `api/evenement/deleteReservation/`, `api/connexion/deleteConnexion/`, `api/chaloupe/deleteChaloupe/`, `api/chaloupe/deleteRejoint/`  
+🔹 **Accès** : 🔒 Requiert d'être administrateur  
 🔹 **Méthode** : **DELETE**  
 🔹 **Description** :  Permet de supprimer une donnée dans une table, nécessite de connaître l'**ID** de la donnée qu'on veut supprimer
 
@@ -323,8 +323,8 @@ Puis dans le body :
 
 #### ⚠️**Les exceptions**
 
-🔹 `api/evenement/deleteReservation/` : en guise d'ID, on utilise `id_evenement` **ET** `id_utilisateur`, de même pour `api/chaloupe/deleteRejoint/` qui utilise `id_chaloupe` **ET** `id_utilisateur`
-🔹 `api/connexion/deleteConnexion/` : en plus de l'ID (qui correspond à `id_utilisateur`), on a un paramètre `jour` obligatoire qui correspond au jour de la connexion
+🔹 `api/evenement/deleteReservation/` : en guise d'ID, on utilise `id_evenement` **ET** `id_utilisateur`, de même pour `api/chaloupe/deleteRejoint/` qui utilise `id_chaloupe` **ET** `id_utilisateur`  
+🔹 `api/connexion/deleteConnexion/` : en plus de l'ID (qui correspond à `id_utilisateur`), on a un paramètre `jour` obligatoire qui correspond au jour de la connexion  
 
 ✅ **Exemples d'utilisation** :
 
