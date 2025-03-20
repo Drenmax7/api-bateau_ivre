@@ -15,7 +15,7 @@ from time import time
 import pycountry
 
 
-LIMITE_PART = 100
+LIMITE_PART = 1000
 ID_PRODUIT_PART_SOCIAL = 11
 
 with open("token.tok","r") as f:
@@ -89,7 +89,7 @@ def getUsers():
         i["id_civilite"]:i["libelle"] for i in civilite
     }
     
-    url = f"https://weapi1.welogin.fr/clients?limit=3000&offset=0"  
+    url = f"https://weapi1.welogin.fr/clients"#?limit=3000&offset=0"  
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
@@ -97,9 +97,16 @@ def getUsers():
         print(f"{len(user)} utilisateurs recu")
     else:
         return Response({"message": "Échec de l'import des utilisateurs","status":response.status_code,"url":url,"reponse":response})
+    
+    userFormate = []
+    for i in user:
+        pays = pycountry.countries.get(alpha_3=i["code_pays"])
+        if (pays != None):
+            nomPays = pays.name
+        else:
+            nomPays = i["code_pays"]
 
-    userFormate = [
-        {
+        userFormate.append({
             "id_client" : i["id_client"],
             "nom" : i["nom"],
             "prenom" : i["prenom"],
@@ -108,15 +115,13 @@ def getUsers():
             "civilite" : civiliteFormat.get(i["id_civilite_client"],"n/a"),
             "adresse" : i["adresse"].replace(","," "),
             "ville" : i["ville"],
-            "pays" : pycountry.countries.get(alpha_3=i["code_pays"]).name,
+            "pays" : nomPays,
             "complement_adresse" : i["adresse_complementaire"],
             "code_postal" : i["code_postal"],
             "telephone" : i["telephone"],
             "college" : i["categorie_client"],
             "organisation" : i["structure"]
-        }
-        for i in user
-    ]
+        })
 
     return userFormate
 
@@ -164,8 +169,16 @@ def addUsers(user, part):
             continue
     
         if compteUser%100 == 0:
-            print(f"{compteUser}/{len(user)} utilisateurs ajoutés")
+            print(f"{compteUser} utilisateurs ajoutés")
         compteUser += 1
+
+        if len(i["mail"]) < 2:
+            i["mail"] = f"pas de mail {compteUser}"
+        else:
+            duplicatMail = Utilisateur.objects.filter(mail__icontains=i["mail"])
+            if len(duplicatMail) > 0:
+                i["mail"] += f" erreur duplicat {len(duplicatMail)}"
+                print(i["mail"])
 
         utilisateur = Utilisateur(
             nom = i["nom"],
