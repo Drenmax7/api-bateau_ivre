@@ -110,10 +110,49 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     """
     @action(detail=False, methods=["get"], permission_classes = [IsAuthenticated])
     def getUser(self, request):
+        exportGeoJson = request.GET.get('geojson') == "1"
         try :
             utilisateurs = Utilisateur.objects.filter(**filtreTable(request))
-            serializer = self.get_serializer(utilisateurs, many=True)
-            return Response(serializer.data)
+
+            if exportGeoJson:
+                features = []
+                for utilisateur in utilisateurs:
+                    features.append({
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [utilisateur.longitude, utilisateur.latitude]
+                        },
+                        "properties": {
+                            "id_utilisateur": utilisateur.id_utilisateur,
+                            "last_login": utilisateur.last_login,
+                            "nom": utilisateur.nom,
+                            "prenom": utilisateur.prenom,
+                            "civilite": utilisateur.civilite,
+                            "adresse": utilisateur.adresse,
+                            "ville": utilisateur.ville,
+                            "pays": utilisateur.pays,
+                            "code_postal": utilisateur.code_postal,
+                            "telephone": utilisateur.telephone,
+                            "complement_adresse": utilisateur.complement_adresse,
+                            "premiere_connexion": utilisateur.premiere_connexion,
+                            "derniere_connexion": utilisateur.derniere_connexion,
+                            "mail": utilisateur.mail,
+                            "is_active": utilisateur.is_active,
+                            "is_staff": utilisateur.is_staff,
+                            "college_id": utilisateur.college.nom,
+                        }
+                    })
+
+                geojson_data = {
+                    "type": "FeatureCollection",
+                    "features": features
+                }
+
+                return Response(geojson_data)
+            else:
+                serializer = self.get_serializer(utilisateurs, many=True)
+                return Response(serializer.data)
 
         except exceptions.FieldError as e:
             return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
