@@ -207,7 +207,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     Le mail doit etre unique
     Renvoie l'id de l'utilisateur ainsi crée
     """
-    @action(detail=False, methods=["post"], permission_classes = []) #pas de permissions pour que quelqu'un puisse creer son compte par lui meme
+    @action(detail=False, methods=["post"], permission_classes = [IsAdminUser])
     def addUser(self, request):
         nom = request.data.get("nom")
         prenom = request.data.get("prenom")
