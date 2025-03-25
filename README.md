@@ -186,7 +186,7 @@ Si tu veux récupérer tous les utilisateurs **nommés "Duck"** qui habitent **�
 
 #### 📕**Ajouter des données dans une table**
 🔹 **URLS** : `api/utilisateur/addUser/`, `api/utilisateur/addCollege/`, `api/societaire/addSocietaire/`, `api/partSocial/addPartSocial/`, `api/evenement/addEvenement/`, `api/evenement/addReservation/`, `api/connexion/addConnexion/`, `api/chaloupe/addChaloupe/`, `api/chaloupe/addRejoint/`  
-🔹 **Accès** : 🔒 Requiert d'être administrateur, (excepté **`/api/utilisateur/addUser/`**)  
+🔹 **Accès** : 🔒 Requiert d'être administrateur
 🔹 **Méthode** : **POST**  
 🔹 **Description** :  Permet d'ajouter des entrées dans une table, nécessite de mettre les informations de la donnée qu'on veut ajouter dans le body
 
