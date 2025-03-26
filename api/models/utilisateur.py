@@ -33,7 +33,7 @@ class Utilisateur(AbstractBaseUser):
     pays = models.CharField(max_length=50)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
-    code_postal = models.CharField(max_length=6, blank=True, null=True)
+    code_postal = models.CharField(max_length=15, blank=True, null=True)
     telephone = models.CharField(max_length=20)
     complement_adresse = models.CharField(max_length=100, blank=True, null=True)
     premiere_connexion = models.DateTimeField(blank=True, null=True)
@@ -43,6 +43,8 @@ class Utilisateur(AbstractBaseUser):
     mail = models.EmailField(max_length=100, unique=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+
+    id_client_welogin = models.PositiveIntegerField()
 
     USERNAME_FIELD = "mail"  
     REQUIRED_FIELDS = []  
