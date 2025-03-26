@@ -115,7 +115,7 @@ def popUtilisateur():
             mail = ""
             while (mail in listeMail or premiereFois):
                 premiereFois = False
-                mail = f"{nom}{choice(["","."])}{prenom}{randint(0,20)}@{choice(["gmail","orange","outlook","canard"])}.com"
+                mail = f"{nom}{choice(['','.'])}{prenom}{randint(0,20)}@{choice(['gmail','orange','outlook','canard'])}.com"
             listeMail.append(mail)
 
             mdp = "ceci n'est pas le mot de passe, il est hashe"
