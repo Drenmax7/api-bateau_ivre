@@ -15,7 +15,7 @@ from time import time
 import pycountry
 
 
-LIMITE_PART = 100
+LIMITE_PART = 1000000
 ID_PRODUIT_PART_SOCIAL = 11
 
 with open("token.tok","r") as f:
@@ -167,8 +167,8 @@ def addCollege(user):
     listeCollege = [i.nom for i in College.objects.all()]
     nouveauxCollege = []
     for i in user:
-        if not(str(i["college"]) in listeCollege):
-            nouveauxCollege.append(i["college"])
+        if not(str(i["college"]) in listeCollege) and not(str(i["college"]) in nouveauxCollege):
+            nouveauxCollege.append(str(i["college"]))
     
     College.objects.bulk_create([College(nom=str(nom)) for nom in nouveauxCollege])
 
@@ -343,7 +343,6 @@ def updateWeLogin(request):
         return part
     #eviter les doublons
     part = supprimeDoublon(part)
-    print(part)
 
     #user apres dernierImport
     user = getUsers()
