@@ -3,7 +3,7 @@ import requests
 url = "http://127.0.0.1:8000/api/utilisateur/login/"
 param = {"mail":"canard@gmail.com", "password":"canard"}
 reponse = requests.post(url,data=param)
-print(reponse)
+
 data = reponse.json()
 csrftoken = data["csrftoken"]
 sessionid = data["sessionid"]
