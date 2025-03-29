@@ -253,6 +253,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
                 latitude = None,
                 college = college,
                 is_staff = is_staff,
+                id_client_welogin = -1,
 
                 mail = mail,
             )
