@@ -82,7 +82,7 @@ def getPartSocial(dateDebut="1970-01-01"):
 
 """Recupere l'entiereté de la base d'utilisateur de welogin et renvoie une liste contenant les informations pertinante de ces utilisateurs
 """
-def getUsers():    
+def getUsers(dateDebutModification = "1970-01-01"):    
     url = f"https://weapi1.welogin.fr/clients/civilites"
     response = requests.get(url, headers=headers)
 
@@ -96,7 +96,7 @@ def getUsers():
         i["id_civilite"]:i["libelle"] for i in civilite
     }
     
-    url = f"https://weapi1.welogin.fr/clients"#&limit=3000&offset=0"  
+    url = f"https://weapi1.welogin.fr/clients?date_debut_modification={dateDebutModification}"#&limit=3000&offset=0"  
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
@@ -132,8 +132,33 @@ def getUsers():
 
     return userFormate
 
-def updateUsers():
-    pass
+def updateUsers(users):
+    compte = 0
+    for user in users:
+        utilisateur = Utilisateur.objects.filter(id_client_welogin = user["id_client"])
+        if len(utilisateur) == 0:
+            continue
+
+        societaire = Societaire.objects.filter(id_utilisateur = utilisateur[0])
+        if len(societaire) == 0:
+            continue
+
+        societaire.update(organisation=user["organisation"])
+        
+        compte += 1
+        del user["id_client"]
+        del user['mot_de_passe']
+        del user["organisation"]
+        del user["college"]
+        
+        try:
+            utilisateur.update(**user)
+        except:
+            del user["mail"]
+            utilisateur.update(**user)
+
+    
+    print(f"{compte} utilisateur mis a jour")
 
 """Ajoute un utilisateur lambda, qui a pour vocation d'etre supprimé, permettant de designer un vrai utilisateur comme admin
 """
@@ -357,8 +382,11 @@ def updateWeLogin(request):
     #ajouter les users qui correspondent a des parts social
     addUsers(user, part)
 
+    user = getUsers(dernierImport)
+    if type(user) != list:
+        return user
     #application des modifications des utilisateurs
-    updateUsers()
+    updateUsers(user)
     
     #calul coordonnés des nouveaux users
     trouveCoordonneeUsers(skipLocalisation)
