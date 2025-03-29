@@ -132,6 +132,9 @@ def getUsers():
 
     return userFormate
 
+def updateUsers():
+    pass
+
 """Ajoute un utilisateur lambda, qui a pour vocation d'etre supprimé, permettant de designer un vrai utilisateur comme admin
 """
 def addBaseUser():
@@ -239,8 +242,8 @@ def addUsers(user, part):
         
         compteAchat = 0
         for j in listePart:
-            j.numero_achat = compteAchat
             compteAchat += 1
+            j.numero_achat = compteAchat
             j.save()
 
 """Tente de trouver une localisation pour chacun des utilisateurs
@@ -354,8 +357,8 @@ def updateWeLogin(request):
     #ajouter les users qui correspondent a des parts social
     addUsers(user, part)
 
-
     #application des modifications des utilisateurs
+    updateUsers()
     
     #calul coordonnés des nouveaux users
     trouveCoordonneeUsers(skipLocalisation)
