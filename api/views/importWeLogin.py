@@ -42,7 +42,8 @@ def getPartSocial(dateDebut="1970-01-01"):
     offset = 0  
     endReached = False
     while offset < LIMITE_PART:
-        url = f"https://weapi1.welogin.fr/commandes?id_produit={ID_PRODUIT_PART_SOCIAL}&dateDebut={dateDebut}&limit={limite}&offset={offset}"  
+        url = f"https://weapi1.welogin.fr/commandes?id_produit={ID_PRODUIT_PART_SOCIAL}&date_debut={dateDebut}&limit={limite}&offset={offset}"
+        print(url)  
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
