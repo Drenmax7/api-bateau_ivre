@@ -13,6 +13,7 @@ from ..models import Utilisateur, Connexion, HistoriqueConnexion, College, Reser
 from ..serializers import UtilisateurSerializer, CollegeSerializer
 
 import datetime
+import requests
 
 class UtilisateurAPIView(viewsets.GenericViewSet):
     queryset = Utilisateur.objects.all()
@@ -168,12 +169,39 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     @action(detail=False, methods=["put"], permission_classes = [IsAdminUser])
     def updateUser(self, request):
         table_id = request.data.get("id_utilisateur")
+        noWelogin = request.data.get("noWelogin") == "1"
+
+
         if not table_id:
             return Response({"message": "id_utilisateur est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
 
         entry = Utilisateur.objects.filter(id_utilisateur=table_id)
         if len(entry) == 0:
             return Response({"message": "Aucun utilisateur n'a cette id"}, status=status.HTTP_404_NOT_FOUND)
+        
+        if not(noWelogin):
+            user = entry[0]
+            idClient = user.id_client_welogin
+            
+            if idClient != 0:
+                filtres = updateTable(request)
+                nom = filtres.get("nom",user.nom)
+                prenom = filtres.get("prenom", user.prenom)
+                adresse = filtres.get("adresse", user.adresse)
+                code_postal = filtres.get("code_postal", user.code_postal)
+                ville = filtres.get("ville",user.ville)
+                code_pays = filtres.get("pays",user.pays)
+                telephone = filtres.get("telephone",user.telephone)
+                email = filtres.get("mail",user.mail)
+
+                with open("token.tok","r") as f:
+                    token = f.read()
+
+                headers = {
+                    "Authorization": f"Bearer {token}"
+                }
+                url = f"https://weapi1.welogin.fr/clients/{idClient}?nom={nom}&prenom={prenom}&adresse={adresse}&code_postal={code_postal}&ville={ville}&code_pays={code_pays}&telephone={telephone}&email={email}"
+                response = requests.put(url, headers=headers)
 
         try:
             entry.update(**updateTable(request))
@@ -376,6 +404,7 @@ class UtilisateurAPIView(viewsets.GenericViewSet):
     @action(detail=False, methods=["put"], permission_classes = [IsAdminUser])
     def updateCollege(self, request):
         table_id = request.data.get("college")
+
         if not table_id:
             return Response({"message": "college est un parametre obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
 
