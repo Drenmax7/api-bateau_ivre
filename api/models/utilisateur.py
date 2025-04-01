@@ -44,7 +44,7 @@ class Utilisateur(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    id_client_welogin = models.PositiveIntegerField()
+    id_client_welogin = models.PositiveIntegerField(blank=True, null=True)
 
     USERNAME_FIELD = "mail"  
     REQUIRED_FIELDS = []  
