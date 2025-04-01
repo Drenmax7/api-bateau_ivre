@@ -25,7 +25,8 @@ class UtilisateurTest_correctUse(APITestCase):
             "complement_adresse": "Apt 2B",
             "mail": "johndoe@test.com",
             "password":"password",
-            "college": "Citoyen"
+            "college": "Citoyen",
+            "is_staff": False
         }
 
     def test_add_user(self):
@@ -72,6 +73,7 @@ class UtilisateurTest_correctUse(APITestCase):
         # Mets à jour l'utilisateur
         newData = {
             "id_utilisateur": id_utilisateur, 
+            "noWelogin" : "1",
             "colonne": ["nom", "prenom"], 
             "valeur": ["NouveauNom", "NouveauPrenom"]
         }
