@@ -43,7 +43,6 @@ def getPartSocial(dateDebut="1970-01-01"):
     endReached = False
     while offset < LIMITE_PART:
         url = f"https://weapi1.welogin.fr/commandes?id_produit={ID_PRODUIT_PART_SOCIAL}&date_debut={dateDebut}&limit={limite}&offset={offset}"
-        print(url)  
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
@@ -382,6 +381,7 @@ def updateWeLogin(request):
     addCollege(user)
     #ajouter les users qui correspondent a des parts social
     addUsers(user, part)
+    
 
     user = getUsers(dernierImport)
     if type(user) != list:
@@ -391,6 +391,7 @@ def updateWeLogin(request):
     
     #calul coordonnés des nouveaux users
     trouveCoordonneeUsers(skipLocalisation)
+    
 
     with open("detailImport.txt","w") as f:
         now = datetime.now().strftime("%Y-%m-%d")
